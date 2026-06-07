@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificador de Referencias — RefCheck</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d2e;
+      --surface2: #222539;
+      --border: #2e3250;
+      --accent: #6366f1;
+      --accent2: #38bdf8;
+      --accent3: #a78bfa;
+      --verde: #34d399;
+      --amarillo: #fbbf24;
+      --rojo: #f87171;
+      --texto: #e2e8f0;
+      --texto-dim: #94a3b8;
+      --radio: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--texto);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      overflow: hidden;
+      padding: 36px 40px 32px;
+    }
+
+    .header-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0d0221 0%, #1a1060 30%, #0a2a4a 60%, #0d1f3c 100%);
+      background-size: 300% 300%;
+      animation: gradientShift 8s ease infinite;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Orbs decorativos */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.3;
+      animation: orbFloat 10s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 280px; height: 280px; background: #6366f1; top: -80px; right: 10%; animation-delay: 0s; }
+    .orb-2 { width: 200px; height: 200px; background: #38bdf8; bottom: -60px; right: 30%; animation-delay: -3s; }
+    .orb-3 { width: 150px; height: 150px; background: #a78bfa; top: 20px; left: 40%; animation-delay: -6s; }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(20px, -15px) scale(1.05); }
+      66%       { transform: translate(-10px, 10px) scale(0.95); }
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .logo-area {}
+
+    .logo-line {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      font-size: 32px;
+      filter: drop-shadow(0 0 12px rgba(99,102,241,0.8));
+      animation: iconPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { filter: drop-shadow(0 0 12px rgba(99,102,241,0.8)); }
+      50%       { filter: drop-shadow(0 0 24px rgba(167,139,250,0.9)); }
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+    .logo-text .accent {
+      background: linear-gradient(90deg, var(--accent2), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      margin-top: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .api-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .api-badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 1px solid;
+      backdrop-filter: blur(10px);
+    }
+    .badge-crossref  { color: #38bdf8; border-color: rgba(56,189,248,0.3); background: rgba(56,189,248,0.08); }
+    .badge-semantic  { color: #a78bfa; border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.08); }
+    .badge-openalex  { color: #34d399; border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.08); }
+    .badge-google    { color: #fbbf24; border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 28px 24px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radio);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent2);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .hint {
+      font-size: 12.5px;
+      color: var(--texto-dim);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    .hint code {
+      background: rgba(99,102,241,0.15);
+      color: var(--accent3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 190px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 13px;
+      font-family: inherit;
+      line-height: 1.7;
+      color: var(--texto);
+      resize: vertical;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    textarea::placeholder { color: #4a5568; }
+
+    /* ── OPTIONS ── */
+    .options-grid {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .opt-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .opt-pill input { display: none; }
+    .opt-pill.active-crossref  { border-color: rgba(56,189,248,0.5);  background: rgba(56,189,248,0.08);  color: #38bdf8; }
+    .opt-pill.active-semantic  { border-color: rgba(167,139,250,0.5); background: rgba(167,139,250,0.08); color: #a78bfa; }
+    .opt-pill.active-openalex  { border-color: rgba(52,211,153,0.5);  background: rgba(52,211,153,0.08);  color: #34d399; }
+    .opt-pill.active-apa       { border-color: rgba(251,191,36,0.5);  background: rgba(251,191,36,0.08);  color: #fbbf24; }
+    .opt-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; align-items: center; }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 10px 22px;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      color: white;
+      box-shadow: 0 4px 15px rgba(99,102,241,0.35);
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99,102,241,0.5);
+    }
+    .btn-primary:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--texto-dim);
+    }
+    .btn-ghost:hover { border-color: #556; color: var(--texto); }
+
+    .btn-export {
+      background: linear-gradient(135deg, #059669, #047857);
+      color: white;
+      box-shadow: 0 4px 12px rgba(5,150,105,0.3);
+    }
+    .btn-export:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(5,150,105,0.45); }
+
+    .btn-example {
+      background: none; border: none;
+      color: var(--accent3); font-size: 12px;
+      font-weight: 500; text-decoration: underline;
+      cursor: pointer; padding: 0;
+    }
+
+    /* ── PROGRESS ── */
+    #progress-section {
+      display: none;
+    }
+
+    .progress-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radio);
+      padding: 28px 24px;
+    }
+
+    .progress-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--texto);
+      margin-bottom: 6px;
+    }
+    .progress-sub { font-size: 12px; color: var(--texto-dim); margin-bottom: 14px; }
+
+    .progress-bar-track {
+      background: var(--surface2);
+      border-radius: 20px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      height: 100%;
+      border-radius: 20px;
+      transition: width 0.4s ease;
+      width: 0%;
+      box-shadow: 0 0 10px rgba(99,102,241,0.5);
+    }
+
+    .progress-steps {
+      display: flex;
+      gap: 14px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--texto-dim);
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .step-indicator.active { color: var(--accent2); border-color: rgba(56,189,248,0.3); background: rgba(56,189,248,0.06); }
+    .step-indicator.done   { color: var(--verde); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.06); }
+    .step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ── RESULTS ── */
+    #results-section { display: none; }
+
+    .results-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .results-heading {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--texto);
+    }
+
+    /* ── SUMMARY STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 11.5px; color: var(--texto-dim); font-weight: 500; }
+    .stat-total   .stat-num { color: var(--accent2); }
+    .stat-ok      .stat-num { color: var(--verde); }
+    .stat-warn    .stat-num { color: var(--amarillo); }
+    .stat-error   .stat-num { color: var(--rojo); }
+    .stat-nodoi   .stat-num { color: var(--texto-dim); }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radio);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead th {
+      background: var(--surface2);
+      color: var(--texto-dim);
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(46,50,80,0.6);
+      transition: background 0.1s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(99,102,241,0.04); }
+    td { padding: 13px 14px; vertical-align: top; background: var(--surface); }
+
+    .ref-text {
+      font-size: 12px;
+      color: #b0b8cc;
+      max-width: 300px;
+      line-height: 1.6;
+    }
+    .ref-clamp {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* STATUS BADGES */
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      border: 1px solid;
+    }
+    .s-ok    { color: var(--verde);    border-color: rgba(52,211,153,0.3);  background: rgba(52,211,153,0.08); }
+    .s-warn  { color: var(--amarillo); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); }
+    .s-error { color: var(--rojo);     border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.08); }
+    .s-nodoi { color: var(--texto-dim);border-color: var(--border);         background: var(--surface2); }
+
+    /* CHECKS */
+    .checks { list-style: none; margin: 0; padding: 0; }
+    .checks li {
+      font-size: 11.5px;
+      padding: 2px 0;
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      line-height: 1.5;
+    }
+    .c-ok   { color: var(--verde); }
+    .c-warn { color: var(--amarillo); }
+    .c-err  { color: var(--rojo); }
+    .c-info { color: var(--accent2); }
+    .c-dim  { color: var(--texto-dim); }
+
+    /* SOURCE TAGS */
+    .src-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      vertical-align: middle;
+      margin-right: 2px;
+    }
+    .src-cr  { background: rgba(56,189,248,0.15);  color: #38bdf8; }
+    .src-ss  { background: rgba(167,139,250,0.15); color: #a78bfa; }
+    .src-oa  { background: rgba(52,211,153,0.15);  color: #34d399; }
+    .src-apa { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+
+    /* DOI */
+    .doi-link {
+      font-size: 11px;
+      color: var(--accent2);
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .doi-link:hover { text-decoration: underline; }
+
+    .gs-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--amarillo);
+      text-decoration: none;
+      margin-top: 6px;
+      padding: 3px 8px;
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: 6px;
+      background: rgba(251,191,36,0.06);
+      transition: background 0.15s;
+    }
+    .gs-link:hover { background: rgba(251,191,36,0.12); }
+
+    /* FOOTER NOTE */
+    .footer-note {
+      margin-top: 28px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radio);
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--texto-dim);
+      line-height: 1.7;
+    }
+    .footer-note strong { color: var(--texto); }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer-banner {
+      background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(248,113,113,0.06));
+      border: 1.5px solid rgba(251,191,36,0.35);
+      border-radius: var(--radio);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .disclaimer-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      filter: drop-shadow(0 0 6px rgba(251,191,36,0.5));
+    }
+    .disclaimer-body {}
+    .disclaimer-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--amarillo);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .disclaimer-text {
+      font-size: 12.5px;
+      color: #c8a96e;
+      line-height: 1.65;
+    }
+    .disclaimer-text strong { color: #fcd07a; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      margin-top: 36px;
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-credit {
+      font-size: 12px;
+      color: var(--texto-dim);
+      line-height: 1.6;
+    }
+    .footer-credit strong { color: var(--texto); }
+    .footer-cc {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cc-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      text-decoration: none;
+      transition: border-color 0.15s;
+    }
+    .cc-badge:hover { border-color: #556; }
+    .cc-badge img { height: 22px; opacity: 0.85; }
+    .cc-text {
+      font-size: 11px;
+      color: var(--texto-dim);
+      line-height: 1.4;
+    }
+    .cc-text strong { color: var(--texto); display: block; }
+
+    /* PRINT */
+    @media print {
+      body { background: white; color: #000; }
+      header .header-gradient, .orb { display: none; }
+      header { background: #1a1d6e; padding: 20px; }
+      .logo-text, .logo-sub { color: white; }
+      #input-section, .btn-row { display: none !important; }
+      #results-section { display: block !important; }
+      td, thead th { background: white !important; color: #000 !important; border: 1px solid #ddd; }
+      .badge-status { border: 1px solid #999; background: #f0f0f0; color: #333; }
+      .checks li { color: #333; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="header-gradient"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="header-content">
+    <div class="logo-area">
+      <div class="logo-line">
+        <span class="logo-icon">🔬</span>
+        <div>
+          <div class="logo-text">Verificador de <span class="accent">Referencias</span></div>
+          <div class="logo-sub">Detección de alucinaciones bibliográficas · Triple validación</div>
+        </div>
+      </div>
+    </div>
+    <div class="api-badges">
+      <span class="api-badge badge-crossref">● CrossRef</span>
+      <span class="api-badge badge-semantic">● Semantic Scholar</span>
+      <span class="api-badge badge-openalex">● OpenAlex</span>
+      <span class="api-badge badge-google">● Google Scholar ↗</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<div class="container">
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer-banner">
+    <div class="disclaimer-icon">⚠️</div>
+    <div class="disclaimer-body">
+      <div class="disclaimer-title">Aviso importante — Revisión humana obligatoria</div>
+      <div class="disclaimer-text">
+        Esta herramienta es un <strong>apoyo automatizado</strong>, no un dictamen. Los resultados orientan la revisión pero no son determinantes.
+        <strong>El único criterio final válido es el del profesional que corrobora cada referencia directamente en la fuente original.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT -->
+  <div id="input-section" class="card">
+    <div class="card-title">📋 Referencias a verificar</div>
+    <p class="hint">
+      ⚠️ <strong>Pegá únicamente la lista de referencias bibliográficas</strong>, no el texto completo del documento.<br>
+      Separá cada referencia con una <strong>línea en blanco</strong>, o numeradas <code>1.</code> <code>2.</code> —
+      La app busca en CrossRef, Semantic Scholar y OpenAlex en tiempo real.
+      <button class="btn-example" onclick="cargarEjemplo()">Cargar referencias de ejemplo</button>
+    </p>
+    <textarea id="ref-input" placeholder="Pega aquí las referencias...&#10;&#10;Ejemplo:&#10;García, A., &amp; Pérez, B. (2023). Título del artículo. Revista Ejemplo, 12(3), 45–60. https://doi.org/10.xxxx/xxxxxx&#10;&#10;Martínez, C. (2022). Otro título aquí. Otra Revista, 8(1), 10–25."></textarea>
+
+    <div class="options-grid" id="options-grid">
+      <label class="opt-pill active-crossref" onclick="togglePill(this,'crossref')">
+        <input type="checkbox" id="opt-doi" checked>
+        <div class="opt-dot"></div> CrossRef (DOI)
+      </label>
+      <label class="opt-pill active-semantic" onclick="togglePill(this,'semantic')">
+        <input type="checkbox" id="opt-semantic" checked>
+        <div class="opt-dot"></div> Semantic Scholar
+      </label>
+      <label class="opt-pill active-openalex" onclick="togglePill(this,'openalex')">
+        <input type="checkbox" id="opt-openalex" checked>
+        <div class="opt-dot"></div> OpenAlex
+      </label>
+      <label class="opt-pill active-apa" onclick="togglePill(this,'apa')">
+        <input type="checkbox" id="opt-apa" checked>
+        <div class="opt-dot"></div> Formato APA 7
+      </label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-analizar" onclick="analizarReferencias()">
+        🔍 Analizar referencias
+      </button>
+      <button class="btn-ghost" onclick="limpiar()">Limpiar</button>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="progress-section">
+    <div class="progress-card">
+      <div class="card-title">⚡ Verificando en tiempo real</div>
+      <div class="progress-label" id="progress-label">Iniciando análisis...</div>
+      <div class="progress-sub" id="progress-sub"></div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+      </div>
+      <div class="progress-steps" id="progress-steps">
+        <div class="step-indicator" id="step-parse">  <div class="step-dot"></div> Parsing</div>
+        <div class="step-indicator" id="step-crossref"><div class="step-dot"></div> CrossRef</div>
+        <div class="step-indicator" id="step-semantic"><div class="step-dot"></div> Semantic Scholar</div>
+        <div class="step-indicator" id="step-openalex"><div class="step-dot"></div> OpenAlex</div>
+        <div class="step-indicator" id="step-apa">     <div class="step-dot"></div> APA 7</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results-section">
+    <div class="results-top">
+      <div class="results-heading">📊 Resultados</div>
+      <div class="btn-row" style="margin-top:0">
+        <button class="btn-export" onclick="exportarHTML()">⬇ Exportar reporte</button>
+        <button class="btn-ghost" onclick="window.print()">🖨 PDF</button>
+        <button class="btn-ghost" onclick="nuevaConsulta()">← Nueva consulta</button>
+      </div>
+    </div>
+
+    <div class="stats-row" id="stats-row"></div>
+
+    <div class="table-wrap">
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Estado</th>
+            <th>Referencia</th>
+            <th>Fuentes</th>
+            <th>Verificaciones</th>
+          </tr>
+        </thead>
+        <tbody id="results-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="footer-note">
+      <strong>Notas metodológicas:</strong>
+      CrossRef verifica DOIs en tiempo real · Semantic Scholar y OpenAlex buscan por título y autor ·
+      El enlace de Google Scholar abre la búsqueda directa para verificación manual ·
+      La validación APA 7 opera sobre texto plano; elementos tipográficos (cursivas) no son detectables sin marcado ·
+      Estado <em>Sospechosa</em> = inconsistencia que requiere revisión manual, no necesariamente alucinación.
+    </div>
+  </div>
+</div>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-credit">
+      <strong>Verificador de Referencias</strong><br>
+      Creado por Alexander Chinchillas S. · 2026<br>
+      San José, Costa Rica
+    </div>
+    <div class="footer-cc">
+      <div class="cc-text">
+        <strong>Licencia</strong>
+        CC BY-NC-SA 4.0
+      </div>
+      <a class="cc-badge" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="Creative Commons BY-NC-SA 4.0">
+        <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA 4.0">
+      </a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ════════════════════════════════════════
+// TOGGLE PILLS
+// ════════════════════════════════════════
+function togglePill(label, type) {
+  const cb = label.querySelector('input[type="checkbox"]');
+  const cls = `active-${type}`;
+  cb.checked = !cb.checked;
+  if (cb.checked) label.classList.add(cls);
+  else label.classList.remove(cls);
+}
+
+// ════════════════════════════════════════
+// EJEMPLO
+// ════════════════════════════════════════
+function cargarEjemplo() {
+  document.getElementById('ref-input').value =
+`Nakashima, Y., & Ueshima, S. (2020). Factors associated with community participation after stroke: A systematic review. Topics in Stroke Rehabilitation, 27(4), 247–256. https://doi.org/10.1080/10749357.2019.1700458
+
+Bandura, A. (1997). Self-efficacy: The exercise of control. W. H. Freeman.
+
+García-López, R., Martínez, A., & Pérez, B. (2024). Inteligencia artificial en educación superior costarricense: análisis de adopción. Revista Latinoamericana de Tecnología Educativa, 23(1), 45–62. https://doi.org/10.35362/rie8524567
+
+LeCun, Y., Bengio, Y., & Hinton, G. (2015). Deep learning. Nature, 521(7553), 436–444. https://doi.org/10.1038/nature14539
+
+Smith, J. K., & Brown, L. T. (2023). Quantum neuromorphic computing in clinical oncology: A meta-analysis of randomized trials. Journal of Computational Medicine, 45(2), 112–130. https://doi.org/10.9999/jcm.2023.00001`;
+}
+
+// ════════════════════════════════════════
+// PARSER
+// ════════════════════════════════════════
+function parsearReferencias(texto) {
+  let bloques = texto.split(/\n\s*\n/).map(b => b.trim()).filter(b => b.length > 15);
+  if (bloques.length <= 1 && /\n\d+[\.\)]\s/.test(texto)) {
+    bloques = texto.split(/\n(?=\d+[\.\)]\s)/).map(b => b.trim()).filter(b => b.length > 15);
+  }
+  return bloques.map(b => parsearRef(b.replace(/^\d+[\.\)]\s*/, '').trim()));
+}
+
+function parsearRef(texto) {
+  const ref = { texto_original: texto, doi: null, anio: null, autores: null, titulo: null };
+  const doiM = texto.match(/https?:\/\/doi\.org\/([^\s]+)|(?<![a-z])doi\.org\/([^\s]+)|(?<!\/)10\.\d{4,}\/[^\s,]+/i);
+  if (doiM) {
+    let d = doiM[0].replace(/https?:\/\/doi\.org\//i,'').replace(/doi\.org\//i,'').replace(/[.,;)\]]+$/,'');
+    ref.doi = d;
+  }
+  const anioM = texto.match(/\((\d{4}[a-z]?)\)/);
+  if (anioM) ref.anio = anioM[1];
+  if (anioM) {
+    ref.autores = texto.substring(0, texto.indexOf(anioM[0])).replace(/\s+$/, '').replace(/\.$/, '').trim();
+  }
+  if (anioM) {
+    const rest = texto.substring(texto.indexOf(anioM[0]) + anioM[0].length).trim();
+    const titM = rest.match(/^\.?\s*(.+?)\.\s/);
+    if (titM) ref.titulo = titM[1].trim();
+  }
+  return ref;
+}
+
+// ════════════════════════════════════════
+// APA 7 VALIDATION
+// ════════════════════════════════════════
+function validarAPA7(ref) {
+  const ok = [], warn = [];
+  const t = ref.texto_original;
+  if (/\(\d{4}[a-z]?\)\./.test(t)) ok.push('Año con punto tras paréntesis');
+  else if (/\(\d{4}[a-z]?\)/.test(t)) warn.push('Falta el punto después del año paréntesis');
+  else warn.push('Año no encontrado en formato (AAAA)');
+  if (ref.doi) {
+    if (/https?:\/\/doi\.org\//i.test(t)) ok.push('DOI en formato URL correcto');
+    else warn.push('DOI no está en formato https://doi.org/...');
+  }
+  if (ref.autores && /[A-ZÁÉÍÓÚÑ][a-záéíóúñ\-]+(,\s*[A-ZÁÉÍÓÚÑ]\.)/.test(ref.autores)) ok.push('Formato de autores Apellido, I.');
+  else if (ref.autores && ref.autores.length > 3) warn.push('Revisar formato autores: Apellido, I. N.');
+  if (/"[^"]+"|"[^"]+"|«[^»]+»/.test(t)) warn.push('Título no debe ir entre comillas en APA 7');
+  if (/\d+–\d+/.test(t)) ok.push('Guión largo (–) en rangos de páginas');
+  else if (/\d+-\d+/.test(t)) warn.push('Usar guión largo (–) en rangos de páginas');
+  if (t.length < 50) warn.push('Referencia muy corta — posiblemente incompleta');
+  return { ok, warn };
+}
+
+// ════════════════════════════════════════
+// CROSSREF API
+// ════════════════════════════════════════
+async function verificarCrossRef(doi) {
+  if (!doi) return null;
+  try {
+    const r = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}?mailto=refcheck@app.io`, { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) return { existe: false };
+    const d = await r.json(); const m = d.message;
+    return {
+      existe: true, doi: m.DOI,
+      titulo: m.title?.[0] ?? null,
+      autores: m.author?.map(a => a.family || '').join('; ') ?? null,
+      anio: m.issued?.['date-parts']?.[0]?.[0] ?? null,
+      revista: m['container-title']?.[0] ?? null,
+      tipo: m.type ?? null
+    };
+  } catch { return { existe: null, error: 'Sin respuesta' }; }
+}
+
+// ════════════════════════════════════════
+// SEMANTIC SCHOLAR API
+// ════════════════════════════════════════
+async function verificarSemanticScholar(ref) {
+  const query = construirQuery(ref);
+  if (!query) return null;
+  try {
+    const url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&fields=title,authors,year,journal,externalIds&limit=3`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(9000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    if (!d.data || d.data.length === 0) return { encontrado: false };
+    const top = d.data[0];
+    const simil = similitud(normalizar(ref.titulo || ''), normalizar(top.title || ''));
+    return {
+      encontrado: true,
+      titulo: top.title,
+      anio: top.year,
+      autores: top.authors?.map(a => a.name).join('; ') ?? null,
+      revista: top.journal?.name ?? null,
+      doi: top.externalIds?.DOI ?? null,
+      similitud: simil,
+      total: d.total
+    };
+  } catch { return null; }
+}
+
+// ════════════════════════════════════════
+// OPENALEX API
+// ════════════════════════════════════════
+async function verificarOpenAlex(ref) {
+  const query = construirQuery(ref);
+  if (!query) return null;
+  try {
+    const url = `https://api.openalex.org/works?search=${encodeURIComponent(query)}&select=title,authorships,publication_year,doi&per-page=3&mailto=refcheck@app.io`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(9000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    if (!d.results || d.results.length === 0) return { encontrado: false };
+    const top = d.results[0];
+    const simil = similitud(normalizar(ref.titulo || ''), normalizar(top.title || ''));
+    return {
+      encontrado: true,
+      titulo: top.title,
+      anio: top.publication_year,
+      autores: top.authorships?.slice(0,3).map(a => a.author?.display_name).join('; ') ?? null,
+      doi: top.doi?.replace('https://doi.org/','') ?? null,
+      similitud: simil,
+      total: d.meta?.count ?? null
+    };
+  } catch { return null; }
+}
+
+function construirQuery(ref) {
+  const partes = [];
+  if (ref.titulo) partes.push(ref.titulo.substring(0, 120));
+  if (ref.autores) {
+    const primerAp = ref.autores.match(/^([A-ZÁÉÍÓÚÑ][a-záéíóúñ\-]+)/);
+    if (primerAp) partes.push(primerAp[1]);
+  }
+  if (ref.anio) partes.push(ref.anio);
+  return partes.join(' ').trim() || null;
+}
+
+// ════════════════════════════════════════
+// GOOGLE SCHOLAR LINK
+// ════════════════════════════════════════
+function googleScholarLink(ref) {
+  const q = ref.titulo
+    ? `"${ref.titulo.substring(0, 80)}"`
+    : (ref.autores ? ref.autores.substring(0, 50) : '');
+  return `https://scholar.google.com/scholar?q=${encodeURIComponent(q)}`;
+}
+
+// ════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════
+function normalizar(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,'').trim();
+}
+function similitud(a, b) {
+  const sa = new Set(a.split(/\s+/).filter(w => w.length > 3));
+  const sb = new Set(b.split(/\s+/).filter(w => w.length > 3));
+  if (!sa.size || !sb.size) return 0;
+  let c = 0; for (const w of sa) if (sb.has(w)) c++;
+  return c / Math.max(sa.size, sb.size);
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+
+// ════════════════════════════════════════
+// ESTADO GLOBAL
+// ════════════════════════════════════════
+let resultados_globales = [];
+
+// ════════════════════════════════════════
+// MAIN ANALYZE
+// ════════════════════════════════════════
+async function analizarReferencias() {
+  const texto = document.getElementById('ref-input').value.trim();
+  if (!texto) { alert('Pegá al menos una referencia.'); return; }
+  const refs = parsearReferencias(texto);
+  if (!refs.length) { alert('No se encontraron referencias. Separá con línea en blanco.'); return; }
+
+  const optDOI      = document.getElementById('opt-doi').checked;
+  const optSemantic = document.getElementById('opt-semantic').checked;
+  const optOpenAlex = document.getElementById('opt-openalex').checked;
+  const optAPA      = document.getElementById('opt-apa').checked;
+
+  document.getElementById('input-section').style.display = 'none';
+  document.getElementById('progress-section').style.display = 'block';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('btn-analizar').disabled = true;
+  resultados_globales = [];
+
+  setStep('parse', 'active');
+  await sleep(300);
+  setStep('parse', 'done');
+
+  for (let i = 0; i < refs.length; i++) {
+    const ref = refs[i];
+    const pct = Math.round(i / refs.length * 100);
+    actualizarProgreso(pct,
+      `Referencia ${i+1} de ${refs.length}`,
+      (ref.titulo || ref.texto_original).substring(0, 90) + '…');
+
+    let cr = null, ss = null, oa = null;
+
+    if (optDOI && ref.doi) {
+      setStep('crossref', 'active');
+      cr = await verificarCrossRef(ref.doi);
+      setStep('crossref', 'done');
+      await sleep(150);
+    }
+
+    if (optSemantic && (ref.titulo || ref.autores)) {
+      setStep('semantic', 'active');
+      ss = await verificarSemanticScholar(ref);
+      setStep('semantic', 'done');
+      await sleep(150);
+    }
+
+    if (optOpenAlex && (ref.titulo || ref.autores)) {
+      setStep('openalex', 'active');
+      oa = await verificarOpenAlex(ref);
+      setStep('openalex', 'done');
+      await sleep(150);
+    }
+
+    setStep('apa', 'active');
+    const apa = optAPA ? validarAPA7(ref) : { ok: [], warn: [] };
+    setStep('apa', 'done');
+
+    const estado = calcularEstado(ref, cr, ss, oa, apa);
+    resultados_globales.push({ ref, cr, ss, oa, apa, estado });
+
+    if (i < refs.length - 1) await sleep(250);
+  }
+
+  actualizarProgreso(100, 'Análisis completo ✓', '');
+  await sleep(500);
+
+  document.getElementById('progress-section').style.display = 'none';
+  mostrarResultados(resultados_globales);
+  document.getElementById('btn-analizar').disabled = false;
+}
+
+function setStep(id, cls) {
+  const el = document.getElementById('step-' + id);
+  if (!el) return;
+  el.className = 'step-indicator ' + cls;
+}
+
+function actualizarProgreso(pct, label, sub) {
+  document.getElementById('progress-label').textContent = label;
+  document.getElementById('progress-sub').textContent = sub;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ════════════════════════════════════════
+// DETERMINAR ESTADO
+// ════════════════════════════════════════
+function calcularEstado(ref, cr, ss, oa, apa) {
+  // Error crítico: DOI no existe en CrossRef
+  if (cr && cr.existe === false) return 'error';
+  // Error crítico: título muy diferente en CrossRef (posible alucinación)
+  if (cr && cr.existe && cr.titulo && ref.titulo) {
+    const s = similitud(normalizar(ref.titulo), normalizar(cr.titulo));
+    if (s < 0.2) return 'error';
+  }
+  // Error: no encontrado en ningún motor (y sí tiene título buscable)
+  const tieneTitle = !!(ref.titulo && ref.titulo.length > 10);
+  const noEncontradoSS = ss && !ss.encontrado;
+  const noEncontradoOA = oa && !oa.encontrado;
+  if (tieneTitle && noEncontradoSS && noEncontradoOA && !cr?.existe) return 'error';
+
+  // Warn: baja similitud en motores
+  const similSS = ss?.encontrado ? ss.similitud : null;
+  const similOA = oa?.encontrado ? oa.similitud : null;
+  const bajoSS = similSS !== null && similSS < 0.4;
+  const bajoOA = similOA !== null && similOA < 0.4;
+  if (bajoSS && bajoOA) return 'warn';
+  if (apa.warn.length >= 2) return 'warn';
+
+  if (!ref.doi) return 'nodoi';
+  return 'ok';
+}
+
+// ════════════════════════════════════════
+// MOSTRAR RESULTADOS
+// ════════════════════════════════════════
+function mostrarResultados(resultados) {
+  document.getElementById('results-section').style.display = 'block';
+
+  const total    = resultados.length;
+  const validas  = resultados.filter(r => r.estado === 'ok').length;
+  const warn     = resultados.filter(r => r.estado === 'warn').length;
+  const errores  = resultados.filter(r => r.estado === 'error').length;
+  const sinDoi   = resultados.filter(r => r.estado === 'nodoi').length;
+
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card stat-total"><div class="stat-num">${total}</div><div class="stat-label">Total</div></div>
+    <div class="stat-card stat-ok"><div class="stat-num">${validas}</div><div class="stat-label">✅ Válidas</div></div>
+    <div class="stat-card stat-warn"><div class="stat-num">${warn}</div><div class="stat-label">⚠️ Sospechosas</div></div>
+    <div class="stat-card stat-error"><div class="stat-num">${errores}</div><div class="stat-label">❌ Problema</div></div>
+    <div class="stat-card stat-nodoi"><div class="stat-num">${sinDoi}</div><div class="stat-label">🔗 Sin DOI</div></div>
+  `;
+
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = '';
+
+  resultados.forEach((r, idx) => {
+    const tr = document.createElement('tr');
+
+    // #
+    const tdN = document.createElement('td');
+    tdN.innerHTML = `<span style="color:var(--texto-dim);font-weight:600">${idx+1}</span>`;
+    tr.appendChild(tdN);
+
+    // Estado
+    const tdE = document.createElement('td');
+    tdE.innerHTML = badgeEstado(r.estado);
+    tr.appendChild(tdE);
+
+    // Referencia
+    const tdR = document.createElement('td');
+    tdR.className = 'ref-text';
+    tdR.innerHTML = `<div class="ref-clamp" title="${esc(r.ref.texto_original)}">${esc(r.ref.texto_original)}</div>`;
+    tr.appendChild(tdR);
+
+    // Fuentes (DOI + links)
+    const tdF = document.createElement('td');
+    let fHtml = '';
+    if (r.ref.doi) {
+      const doiUrl = `https://doi.org/${r.ref.doi}`;
+      const doiStatus = r.cr
+        ? (r.cr.existe === false ? ' <span style="color:var(--rojo);font-size:10px">✗</span>'
+          : r.cr.existe === true ? ' <span style="color:var(--verde);font-size:10px">✓</span>'
+          : ' <span style="color:var(--texto-dim);font-size:10px">?</span>')
+        : '';
+      fHtml += `<a class="doi-link" href="${doiUrl}" target="_blank">${esc(r.ref.doi)}</a>${doiStatus}<br>`;
+    }
+    const gsUrl = googleScholarLink(r.ref);
+    fHtml += `<a class="gs-link" href="${gsUrl}" target="_blank">🎓 Google Scholar</a>`;
+    tdF.innerHTML = fHtml;
+    tr.appendChild(tdF);
+
+    // Verificaciones
+    const tdC = document.createElement('td');
+    tdC.innerHTML = buildChecks(r);
+    tr.appendChild(tdC);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function badgeEstado(e) {
+  const m = {
+    ok:    ['s-ok',   '✅', 'Válida'],
+    warn:  ['s-warn', '⚠️','Sospechosa'],
+    error: ['s-error','❌', 'Problema'],
+    nodoi: ['s-nodoi','🔗', 'Sin DOI']
+  };
+  const [cls, ico, lbl] = m[e] || m.nodoi;
+  return `<span class="badge-status ${cls}">${ico} ${lbl}</span>`;
+}
+
+function buildChecks(r) {
+  const items = [];
+  const tag = (t) => `<span class="src-tag src-${t}">${t.toUpperCase()}</span>`;
+
+  // CrossRef
+  if (r.cr) {
+    if (r.cr.existe === false) {
+      items.push(`<li class="c-err">${tag('cr')} DOI no encontrado — posible alucinación</li>`);
+    } else if (r.cr.existe === null) {
+      items.push(`<li class="c-dim">${tag('cr')} Sin respuesta del servidor</li>`);
+    } else {
+      items.push(`<li class="c-ok">${tag('cr')} DOI verificado en CrossRef</li>`);
+      if (r.ref.titulo && r.cr.titulo) {
+        const s = similitud(normalizar(r.ref.titulo), normalizar(r.cr.titulo));
+        if (s > 0.7) items.push(`<li class="c-ok">${tag('cr')} Título coincide (${pct(s)}%)</li>`);
+        else if (s > 0.35) items.push(`<li class="c-warn">${tag('cr')} Título similar parcial (${pct(s)}%)</li>`);
+        else items.push(`<li class="c-err">${tag('cr')} Título difiere: "${esc((r.cr.titulo||'').substring(0,60))}"</li>`);
+      }
+      if (r.ref.anio && r.cr.anio && String(r.ref.anio) !== String(r.cr.anio)) {
+        items.push(`<li class="c-err">${tag('cr')} Año: ref dice ${r.ref.anio}, CrossRef dice ${r.cr.anio}</li>`);
+      } else if (r.cr.anio) {
+        items.push(`<li class="c-ok">${tag('cr')} Año ${r.cr.anio} confirmado</li>`);
+      }
+    }
+  }
+
+  // Semantic Scholar
+  if (r.ss) {
+    if (!r.ss.encontrado) {
+      items.push(`<li class="c-err">${tag('ss')} No encontrado en Semantic Scholar</li>`);
+    } else {
+      const s = r.ss.similitud;
+      if (s > 0.65) items.push(`<li class="c-ok">${tag('ss')} Encontrado (${pct(s)}% similitud)</li>`);
+      else if (s > 0.35) items.push(`<li class="c-warn">${tag('ss')} Resultado parcial (${pct(s)}% similitud) — revisar</li>`);
+      else items.push(`<li class="c-warn">${tag('ss')} Título diferente en SS (${pct(s)}%) — "${esc((r.ss.titulo||'').substring(0,55))}"</li>`);
+      if (r.ref.anio && r.ss.anio && String(r.ref.anio) !== String(r.ss.anio)) {
+        items.push(`<li class="c-warn">${tag('ss')} Año diferente: SS reporta ${r.ss.anio}</li>`);
+      }
+    }
+  }
+
+  // OpenAlex
+  if (r.oa) {
+    if (!r.oa.encontrado) {
+      items.push(`<li class="c-err">${tag('oa')} No encontrado en OpenAlex</li>`);
+    } else {
+      const s = r.oa.similitud;
+      if (s > 0.65) items.push(`<li class="c-ok">${tag('oa')} Encontrado (${pct(s)}% similitud)</li>`);
+      else if (s > 0.35) items.push(`<li class="c-warn">${tag('oa')} Resultado parcial en OA (${pct(s)}%)</li>`);
+      else items.push(`<li class="c-warn">${tag('oa')} Título diferente en OA (${pct(s)}%)</li>`);
+    }
+  }
+
+  // APA7
+  r.apa.ok.forEach(o   => items.push(`<li class="c-ok">${tag('apa')} ${esc(o)}</li>`));
+  r.apa.warn.forEach(w => items.push(`<li class="c-warn">${tag('apa')} ${esc(w)}</li>`));
+
+  // Sin título (no buscable)
+  if (!r.ref.titulo && !r.ref.doi) {
+    items.push(`<li class="c-dim">Sin título ni DOI detectado — parsing limitado</li>`);
+  }
+
+  return `<ul class="checks">${items.join('')}</ul>`;
+}
+
+function pct(s) { return Math.round(s * 100); }
+
+// ════════════════════════════════════════
+// EXPORT HTML
+// ════════════════════════════════════════
+function exportarHTML() {
+  const fecha = new Date().toLocaleDateString('es-CR', { year:'numeric', month:'long', day:'numeric' });
+  const estadoMap = { ok:'✅ Válida', warn:'⚠️ Sospechosa', error:'❌ Problema', nodoi:'🔗 Sin DOI' };
+  const total   = resultados_globales.length;
+  const validas = resultados_globales.filter(r=>r.estado==='ok').length;
+  const warn    = resultados_globales.filter(r=>r.estado==='warn').length;
+  const errores = resultados_globales.filter(r=>r.estado==='error').length;
+
+  let rows = '';
+  resultados_globales.forEach((r, i) => {
+    const checks = buildChecksPlain(r);
+    const doiCell = r.ref.doi
+      ? `<a href="https://doi.org/${r.ref.doi}" style="color:#2e86c1">${r.ref.doi}</a>${r.cr?.existe===true?' ✓':r.cr?.existe===false?' ✗':''}`
+      : '—';
+    const gs = `<a href="${googleScholarLink(r.ref)}" style="color:#d4ac0d" target="_blank">Google Scholar ↗</a>`;
+    rows += `<tr><td>${i+1}</td><td>${estadoMap[r.estado]||r.estado}</td><td style="max-width:320px;font-size:12px">${r.ref.texto_original.replace(/</g,'&lt;')}</td><td>${doiCell}<br>${gs}</td><td style="font-size:11px">${checks}</td></tr>`;
+  });
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reporte Referencias ${fecha}</title>
+<style>body{font-family:Arial,sans-serif;padding:30px;color:#1a1a2e;max-width:1100px;margin:0 auto}h1{color:#1a1060;font-size:22px}table{width:100%;border-collapse:collapse;margin-top:20px;font-size:13px}th{background:#1a1060;color:white;padding:10px 12px;text-align:left}td{padding:9px 12px;border-bottom:1px solid #ddd;vertical-align:top}tr:nth-child(even){background:#f7f7fd}.pills{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}.pill{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600}.p-t{background:#eaf2fb;color:#2e86c1}.p-o{background:#d5f5e3;color:#1e8449}.p-w{background:#fef9e7;color:#b7950b}.p-e{background:#fce4e4;color:#c0392b}.aviso{background:#fffbea;border:2px solid #f59e0b;border-radius:8px;padding:16px 20px;margin:20px 0;font-size:13px;color:#78350f;line-height:1.7}.aviso-titulo{font-weight:700;font-size:14px;color:#92400e;margin-bottom:6px}.footer-rep{margin-top:32px;padding-top:16px;border-top:2px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12px;color:#6b7280}.footer-rep strong{color:#374151}</style>
+</head><body>
+<h1>🔬 Reporte de Verificación de Referencias</h1>
+<p>Generado el ${fecha} · CrossRef · Semantic Scholar · OpenAlex · Google Scholar</p>
+<div class="aviso">
+  <div class="aviso-titulo">⚠️ Aviso importante — Revisión humana obligatoria</div>
+  Este reporte es un <strong>apoyo automatizado</strong>, no un dictamen definitivo.
+  Los resultados orientan la revisión pero no son determinantes.
+  <strong>El único criterio final válido es el del profesional que corrobora cada referencia directamente en la fuente original.</strong>
+</div>
+<div class="pills">
+  <div class="pill p-t">📚 Total: ${total}</div><div class="pill p-o">✅ Válidas: ${validas}</div>
+  <div class="pill p-w">⚠️ Sospechosas: ${warn}</div><div class="pill p-e">❌ Problemas: ${errores}</div>
+</div>
+<table><thead><tr><th>#</th><th>Estado</th><th>Referencia</th><th>Fuentes</th><th>Verificaciones</th></tr></thead>
+<tbody>${rows}</tbody></table>
+<div class="footer-rep">
+  <div><strong>Verificador de Referencias</strong> · Creado por Alexander Chinchillas S. · San José, Costa Rica · 2026<br>CrossRef · Semantic Scholar · OpenAlex · Google Scholar</div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span>Licencia <strong>CC BY-NC-SA 4.0</strong></span>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="CC BY-NC-SA 4.0" style="height:20px;vertical-align:middle">
+    </a>
+  </div>
+</div>
+</body></html>`;
+
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([html],{type:'text/html'})),
+    download: `Reporte-Referencias-${new Date().toISOString().slice(0,10)}.html`
+  });
+  a.click();
+}
+
+function buildChecksPlain(r) {
+  const items = [];
+  if (r.cr?.existe === false) items.push('❌ CrossRef: DOI no encontrado');
+  else if (r.cr?.existe) {
+    items.push('✅ CrossRef: DOI verificado');
+    if (r.ref.titulo && r.cr.titulo) {
+      const s = similitud(normalizar(r.ref.titulo),normalizar(r.cr.titulo));
+      items.push(s>0.7?`✅ CR Título coincide (${pct(s)}%)`:`⚠️ CR Título difiere (${pct(s)}%): ${(r.cr.titulo||'').substring(0,50)}`);
+    }
+  }
+  if (r.ss?.encontrado) items.push(`${r.ss.similitud>0.65?'✅':'⚠️'} Semantic Scholar: ${pct(r.ss.similitud)}% similitud`);
+  else if (r.ss) items.push('❌ Semantic Scholar: no encontrado');
+  if (r.oa?.encontrado) items.push(`${r.oa.similitud>0.65?'✅':'⚠️'} OpenAlex: ${pct(r.oa.similitud)}% similitud`);
+  else if (r.oa) items.push('❌ OpenAlex: no encontrado');
+  r.apa.warn.forEach(w => items.push(`⚠️ APA: ${w}`));
+  return items.join('<br>') || '—';
+}
+
+// ════════════════════════════════════════
+// UI HELPERS
+// ════════════════════════════════════════
+function limpiar() { document.getElementById('ref-input').value = ''; }
+function nuevaConsulta() {
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('input-section').style.display = 'block';
+}
+</script>
+</body>
+</html>

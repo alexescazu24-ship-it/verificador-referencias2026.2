@@ -201,7 +201,7 @@
 /* ── Apply fonts globally ── */
 body { font-family: var(--font-body); }
 .logo-text, .results-heading, .card-title { font-family: var(--font-display); }
-textarea, .doi-link, code, .src-tag { font-family: var(--font-mono); }
+#ref-input, .doi-link, code, .src-tag { font-family: var(--font-mono); }
 
 /* ── Logo placa (dark plate on light skins) ── */
 .logo-placa {
@@ -295,22 +295,34 @@ textarea, .doi-link, code, .src-tag { font-family: var(--font-mono); }
 .skin-btn.active { background:linear-gradient(135deg,rgba(99,102,241,0.7),rgba(56,189,248,0.5)); color:#fff; box-shadow:0 1px 6px rgba(99,102,241,0.4); }
 .skin-btn:hover:not(.active) { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.06); }
 
-    
 
-        /* ── FILE UPLOAD ── */
+    /* ── FILE UPLOAD ── */
     .btn-file { background:rgba(99,102,241,0.12); border:1.5px dashed rgba(99,102,241,0.4); color:var(--accent3); font-size:12.5px; font-weight:600; padding:8px 16px; border-radius:8px; cursor:pointer; transition:all 0.15s; }
     .btn-file:hover { background:rgba(99,102,241,0.2); border-color:rgba(99,102,241,0.6); }
     #file-input { display:none; }
     .file-status { font-size:11.5px; color:var(--texto-dim); margin-left:8px; }
+    .docx-aviso { margin-top:10px; padding:8px 12px; border-radius:7px; font-size:12px; line-height:1.55; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); color:var(--amarillo); }
+    #paste-notice { margin-top:10px; padding:10px 14px; border-radius:8px; font-size:12.5px; line-height:1.6; display:flex; gap:10px; align-items:flex-start; background:rgba(56,189,248,0.07); border:1px solid rgba(56,189,248,0.25); color:var(--texto); }
+    #paste-notice .pn-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+    #paste-notice strong { color:var(--accent2); }
+    #paste-notice .pn-count { font-weight:700; color:var(--accent2); font-size:14px; }
+    #paste-notice .pn-warn { color:var(--amarillo); font-weight:600; }
 
     .container { max-width:1150px; margin:0 auto; padding:28px 24px; }
     .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radio); padding:24px; margin-bottom:20px; }
     .card-title { font-size:14px; font-weight:600; color:var(--accent2); margin-bottom:14px; display:flex; align-items:center; gap:8px; text-transform:uppercase; letter-spacing:0.8px; }
     .hint { font-size:12.5px; color:var(--texto-dim); margin-bottom:12px; line-height:1.6; }
     .hint code { background:rgba(99,102,241,0.15); color:var(--accent3); padding:1px 6px; border-radius:4px; font-size:11px; }
-    textarea { width:100%; min-height:190px; background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; padding:14px; font-size:13px; font-family:inherit; line-height:1.7; color:var(--texto); resize:vertical; transition:border-color 0.2s,box-shadow 0.2s; }
-    textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(99,102,241,0.15); }
-    textarea::placeholder { color:#4a5568; }
+    #ref-input {
+      width:100%; min-height:190px; max-height:420px; overflow-y:auto;
+      background:var(--surface2); border:1.5px solid var(--border); border-radius:8px;
+      padding:14px; font-size:13px; font-family:var(--font-mono); line-height:1.7;
+      color:var(--texto); resize:vertical; white-space:pre-wrap; word-break:break-word;
+      transition:border-color 0.2s,box-shadow 0.2s; cursor:text;
+    }
+    #ref-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(99,102,241,0.15); }
+    #ref-input:empty::before { content:attr(data-placeholder); color:#4a5568; pointer-events:none; }
+    #ref-input em, #ref-input i { font-style:italic; }
 
     .options-grid { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
     .opt-pill { display:flex; align-items:center; gap:7px; padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); font-size:12.5px; cursor:pointer; transition:all 0.15s; user-select:none; }
@@ -401,9 +413,26 @@ textarea, .doi-link, code, .src-tag { font-family: var(--font-mono); }
     .cc-text strong { color:var(--texto); display:block; }
 
     @media print {
-      body{background:white;color:#000} header .header-gradient,.orb{display:none} header{background:#1a1d6e;padding:20px} .logo-text,.logo-sub{color:white}
-      #input-section,.btn-row{display:none!important} #results-section{display:block!important}
-      td,thead th{background:white!important;color:#000!important;border:1px solid #ddd} .badge-status{border:1px solid #999;background:#f0f0f0;color:#333} .checks li{color:#333}
+      @page { size: A4 portrait; margin: 1.8cm 1.5cm; }
+      body{background:white;color:#000;font-size:10pt}
+      header .header-gradient,.orb{display:none} header{background:#1a1d6e;padding:16px}
+      .logo-text,.logo-sub{color:white}
+      #input-section,.btn-row,#progress-section{display:none!important}
+      #results-section{display:block!important}
+      .table-wrap{overflow:visible;border:none}
+      table{table-layout:fixed;width:100%;font-size:8.5pt;border-collapse:collapse}
+      thead th{background:#1a1060!important;color:white!important;padding:5px 6px;font-size:8pt}
+      td{background:white!important;color:#111!important;border:0.5pt solid #ccc;padding:5px 6px;vertical-align:top;word-break:break-word}
+      col.c-n{width:22pt} col.c-st{width:54pt} col.c-ref{width:185pt} col.c-src{width:90pt} col.c-chk{width:130pt}
+      .badge-status{border:0.5pt solid #999;background:#f0f0f0!important;color:#333!important;font-size:8pt;padding:2px 5px}
+      .checks li,.checks-ok-sum{font-size:7.5pt;color:#222!important;line-height:1.35}
+      .c-err{color:#8b1a1a!important} .c-warn{color:#7a4a00!important} .c-ok,.c-dim{color:#555!important}
+      .src-tag{font-size:7pt!important;padding:0 3px}
+      .stat-card{padding:8px;border:0.5pt solid #ccc}
+      .stat-num{font-size:18pt!important}
+      .footer-note{font-size:7.5pt;border:0.5pt solid #ddd}
+      .ref-clamp{-webkit-line-clamp:unset;overflow:visible}
+      .doi-link,.gs-link{color:#1a1060!important;font-size:7.5pt}
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -470,7 +499,8 @@ textarea, .doi-link, code, .src-tag { font-family: var(--font-mono); }
       <span data-i18n="input.hint"></span>
       <button class="btn-example" onclick="cargarEjemplo()" data-i18n="input.btn-example"></button>
     </p>
-    <textarea id="ref-input"></textarea>
+    <div id="ref-input" contenteditable="true" role="textbox" aria-multiline="true"
+         spellcheck="false" data-placeholder="Pegá aquí las referencias..."></div>
     <div class="options-grid">
       <label class="opt-pill active-crossref" id="pill-doi">
         <input type="checkbox" id="opt-doi" checked><div class="opt-dot"></div>
@@ -498,6 +528,8 @@ textarea, .doi-link, code, .src-tag { font-family: var(--font-mono); }
       <input type="file" id="file-input" accept=".docx" onchange="cargarDesdeArchivo(this)">
       <span class="file-status" id="file-status"></span>
     </div>
+    <div class="docx-aviso" data-i18n="input.docx-aviso"></div>
+    <div id="paste-notice" style="display:none"></div>
   </div>
 
   <div id="progress-section">
@@ -521,6 +553,8 @@ textarea, .doi-link, code, .src-tag { font-family: var(--font-mono); }
       <div class="results-heading" data-i18n="results.heading"></div>
       <div class="btn-row" style="margin-top:0">
         <button class="btn-export" onclick="exportarHTML()" data-i18n="btn.export"></button>
+        <button class="btn-export" onclick="exportarWord()" data-i18n="btn.export-word" style="background:linear-gradient(135deg,#1d4ed8,#1e40af);box-shadow:0 4px 12px rgba(29,78,216,0.3)"></button>
+        <button class="btn-export" onclick="exportarExcel()" data-i18n="btn.export-excel" style="background:linear-gradient(135deg,#15803d,#166534);box-shadow:0 4px 12px rgba(21,128,61,0.3)"></button>
         <button class="btn-ghost" onclick="window.print()" data-i18n="btn.pdf"></button>
         <button class="btn-ghost" onclick="nuevaConsulta()" data-i18n="btn.nueva"></button>
       </div>
@@ -528,6 +562,9 @@ textarea, .doi-link, code, .src-tag { font-family: var(--font-mono); }
     <div class="stats-row" id="stats-row"></div>
     <div class="table-wrap">
       <table>
+        <colgroup>
+          <col class="c-n"><col class="c-st"><col class="c-ref"><col class="c-src"><col class="c-chk">
+        </colgroup>
         <thead>
           <tr>
             <th data-i18n="th.n"></th><th data-i18n="th.estado"></th>
@@ -571,7 +608,8 @@ const LANGS = {
     'pill.crossref': 'CrossRef (DOI)', 'pill.semantic': 'Semantic Scholar', 'pill.openalex': 'OpenAlex', 'pill.apa': 'Formato APA 7',
     'skin.label': 'Estilo',
     'btn.analizar': 'Analizar referencias', 'btn.limpiar': 'Limpiar',
-    'btn.cargar-archivo': '📎 Cargar .docx', 'btn.manual': '📖 Manual',
+    'btn.cargar-archivo': '📎 Cargar .docx (solo referencias)', 'btn.manual': '📖 Manual',
+    'input.docx-aviso': '⚠ Al cargar un archivo .docx, asegurate de que contenga <strong>únicamente la sección de referencias</strong>. Si cargás el documento completo, el análisis puede incluir texto que no corresponde.',
     'progress.title': '⚡ Verificando en tiempo real', 'progress.init': 'Iniciando análisis...',
     'progress.ref': (n, m) => `Referencia ${n} de ${m}`, 'progress.done': 'Análisis completo ✓',
     'step.parse': 'Procesando', 'step.crossref': 'CrossRef', 'step.semantic': 'Semantic Scholar', 'step.openalex': 'OpenAlex', 'step.apa': 'APA 7',
@@ -589,32 +627,31 @@ const LANGS = {
     'cr.notfound': 'DOI no encontrado — posible alucinación',
     'cr.noresp': 'Sin respuesta del servidor',
     'cr.ok': 'DOI verificado en CrossRef',
-    'cr.title-ok': (p) => `Título coincide (${p}%)`,
-    'cr.title-partial': (p) => `Título similar parcial (${p}%)`,
-    'cr.title-diff': (p, tt) => `Título difiere: "${tt}"`,
-    'cr.year-diff': (r, c) => `Año: ref dice ${r}, CrossRef dice ${c}`,
-    'cr.year-ok': (y) => `Año ${y} confirmado`,
-    // CrossRef búsqueda por título
+    'cr.title-ok': (p) => `Título coincide con CrossRef (${p}%)`,
+    'cr.title-partial': (p) => `Título parcialmente diferente al de CrossRef (${p}%)`,
+    'cr.title-diff': (p, tt) => `El título no coincide con CrossRef — registrado: "${tt}"`,
+    'cr.year-diff': (r, c) => `Año incorrecto: la referencia dice ${r} pero CrossRef registra ${c}`,
+    'cr.year-ok': (y) => `Año ${y} confirmado en CrossRef`,
     // Autores
-    'cr.author-ok': (a) => `Autores coinciden (${a})`,
-    'cr.author-warn': (a) => `Primer autor no coincide — encontrado: ${a}`,
-    'ss.author-ok': (a) => `Autores coinciden (${a})`,
-    'ss.author-warn': (a) => `Primer autor no coincide — encontrado: ${a}`,
-    'oa.author-ok': (a) => `Autores coinciden (${a})`,
-    'oa.author-warn': (a) => `Primer autor no coincide — encontrado: ${a}`,
+    'cr.author-ok': (a) => `Autor confirmado en CrossRef (${a})`,
+    'cr.author-warn': (a) => `Autor diferente: CrossRef registra "${a}"`,
+    'ss.author-ok': (a) => `Autor confirmado en Semantic Scholar (${a})`,
+    'ss.author-warn': (a) => `Autor diferente: Semantic Scholar registra "${a}"`,
+    'oa.author-ok': (a) => `Autor confirmado en OpenAlex (${a})`,
+    'oa.author-warn': (a) => `Autor diferente: OpenAlex registra "${a}"`,
     // Semantic Scholar
-    'ss.notfound': 'No encontrado en Semantic Scholar',
-    'ss.ok': (p) => `Encontrado (${p}% similitud)`,
-    'ss.partial': (p) => `Resultado parcial (${p}% similitud) — revisar`,
-    'ss.diff': (p, tt) => `Título diferente en SS (${p}%) — "${tt}"`,
-    'ss.year': (y) => `Año diferente: SS reporta ${y}`,
+    'ss.notfound': 'No se encontró en Semantic Scholar',
+    'ss.ok': (p) => `Título coincide en Semantic Scholar (${p}%)`,
+    'ss.partial': (p) => `Título parcialmente diferente en Semantic Scholar (${p}%)`,
+    'ss.diff': (p, tt) => `El título no coincide en Semantic Scholar (${p}%) — registrado: "${tt}"`,
+    'ss.year': (y) => `Año diferente: Semantic Scholar registra ${y}`,
     // OpenAlex
-    'oa.notfound': 'No encontrado en OpenAlex',
-    'oa.ok': (p) => `Encontrado (${p}% similitud)`,
-    'oa.partial': (p) => `Resultado parcial en OA (${p}%)`,
-    'oa.diff': (p) => `Título diferente en OA (${p}%)`,
+    'oa.notfound': 'No se encontró en OpenAlex',
+    'oa.ok': (p) => `Título coincide en OpenAlex (${p}%)`,
+    'oa.partial': (p) => `Título parcialmente diferente en OpenAlex (${p}%)`,
+    'oa.diff': (p) => `El título no coincide en OpenAlex (${p}%)`,
     // General
-    'check.noparsing': 'Sin título ni DOI detectado — parsing limitado',
+    'check.noparsing': 'Sin título ni DOI detectado — verificación limitada',
     'warn.journal-nodoi': 'Artículo de revista sin DOI ni enlace — debería tener identificador',
     // APA 7
     'apa.year-ok': 'Año con punto tras paréntesis', 'apa.year-nodot': 'Falta el punto después del año paréntesis', 'apa.year-missing': 'Año no encontrado en formato (AAAA)',
@@ -623,6 +660,14 @@ const LANGS = {
     'apa.quotes': 'Título no debe ir entre comillas en APA 7',
     'apa.dash-ok': 'Guión largo (–) en rangos de páginas', 'apa.dash-warn': 'Usar guión largo (–) en rangos de páginas',
     'apa.short': 'Referencia muy corta — posiblemente incompleta',
+    'apa.italic-article-missing': 'Sin cursiva detectada — el nombre de la revista y el volumen deben ir en cursiva',
+    'apa.italic-journal-ok': 'Nombre de revista en cursiva ✓',
+    'apa.italic-vol-missing': 'Número de volumen sin cursiva — debe ir en cursiva junto con el nombre de la revista',
+    'apa.italic-vol-ok': 'Volumen en cursiva ✓',
+    'apa.italic-book-missing': 'Sin cursiva detectada — el título del libro debe ir en cursiva',
+    'apa.italic-book-ok': 'Título del libro en cursiva ✓',
+    'apa.italic-chapter-missing': 'Sin cursiva en el título del libro fuente — debe ir en cursiva en capítulos de libro',
+    'apa.italic-chapter-ok': 'Título del libro fuente en cursiva ✓',
     // Export
     'export.report-title': 'Reporte Bibliochecker — Verificación de Referencias',
     'export.generated': (f) => `Generado el ${f}`,
@@ -630,6 +675,9 @@ const LANGS = {
     'export.disclaimer-text': 'Este reporte es un <strong>apoyo automatizado</strong>, no un dictamen definitivo. Los resultados orientan la revisión pero no son determinantes. <strong>El único criterio final válido es el del profesional que corrobora cada referencia directamente en la fuente original.</strong>',
     'export.footer-name': 'Bibliochecker',
     'export.created-by': 'Creado por Alexander Chinchilla Serrano · San José, Costa Rica · 2026',
+    'btn.export-word': '📄 Exportar Word', 'btn.export-excel': '📊 Exportar Excel',
+    'check.ok-summary': (n) => `${n} aspecto${n===1?'':'s'} verificado${n===1?'':'s'} sin problema`,
+    'check.no-problems': 'Sin problemas detectados en esta fuente',
   },
   en: {
     'lang.label': 'Language',
@@ -643,7 +691,8 @@ const LANGS = {
     'pill.crossref': 'CrossRef (DOI)', 'pill.semantic': 'Semantic Scholar', 'pill.openalex': 'OpenAlex', 'pill.apa': 'APA 7 Format',
     'skin.label': 'Style',
     'btn.analizar': 'Analyze references', 'btn.limpiar': 'Clear',
-    'btn.cargar-archivo': '📎 Load .docx', 'btn.manual': '📖 Manual',
+    'btn.cargar-archivo': '📎 Load .docx (references only)', 'btn.manual': '📖 Manual',
+    'input.docx-aviso': '⚠ When loading a .docx file, make sure it contains <strong>only the references section</strong>. Loading the full document may include text that does not belong to the reference list.',
     'progress.title': '⚡ Verifying in real time', 'progress.init': 'Starting analysis...',
     'progress.ref': (n, m) => `Reference ${n} of ${m}`, 'progress.done': 'Analysis complete ✓',
     'step.parse': 'Parsing', 'step.crossref': 'CrossRef', 'step.semantic': 'Semantic Scholar', 'step.openalex': 'OpenAlex', 'step.apa': 'APA 7',
@@ -660,27 +709,27 @@ const LANGS = {
     'cr.notfound': 'DOI not found — possible hallucination',
     'cr.noresp': 'No server response',
     'cr.ok': 'DOI verified in CrossRef',
-    'cr.title-ok': (p) => `Title matches (${p}%)`,
-    'cr.title-partial': (p) => `Partial title match (${p}%)`,
-    'cr.title-diff': (p, tt) => `Title differs: "${tt}"`,
-    'cr.year-diff': (r, c) => `Year: ref says ${r}, CrossRef says ${c}`,
-    'cr.year-ok': (y) => `Year ${y} confirmed`,
-    'cr.author-ok': (a) => `Authors match (${a})`,
-    'cr.author-warn': (a) => `First author mismatch — found: ${a}`,
-    'ss.author-ok': (a) => `Authors match (${a})`,
-    'ss.author-warn': (a) => `First author mismatch — found: ${a}`,
-    'oa.author-ok': (a) => `Authors match (${a})`,
-    'oa.author-warn': (a) => `First author mismatch — found: ${a}`,
+    'cr.title-ok': (p) => `Title matches CrossRef (${p}%)`,
+    'cr.title-partial': (p) => `Partial title match in CrossRef (${p}%)`,
+    'cr.title-diff': (p, tt) => `Title mismatch in CrossRef — registered: "${tt}"`,
+    'cr.year-diff': (r, c) => `Incorrect year: reference says ${r} but CrossRef records ${c}`,
+    'cr.year-ok': (y) => `Year ${y} confirmed in CrossRef`,
+    'cr.author-ok': (a) => `Author confirmed in CrossRef (${a})`,
+    'cr.author-warn': (a) => `Different author: CrossRef has "${a}"`,
+    'ss.author-ok': (a) => `Author confirmed in Semantic Scholar (${a})`,
+    'ss.author-warn': (a) => `Different author: Semantic Scholar has "${a}"`,
+    'oa.author-ok': (a) => `Author confirmed in OpenAlex (${a})`,
+    'oa.author-warn': (a) => `Different author: OpenAlex has "${a}"`,
     'ss.notfound': 'Not found in Semantic Scholar',
-    'ss.ok': (p) => `Found (${p}% similarity)`,
-    'ss.partial': (p) => `Partial result (${p}% similarity) — review`,
-    'ss.diff': (p, tt) => `Different title in SS (${p}%) — "${tt}"`,
-    'ss.year': (y) => `Different year: SS reports ${y}`,
+    'ss.ok': (p) => `Title matches in Semantic Scholar (${p}%)`,
+    'ss.partial': (p) => `Partial title match in Semantic Scholar (${p}%)`,
+    'ss.diff': (p, tt) => `Title mismatch in Semantic Scholar (${p}%) — registered: "${tt}"`,
+    'ss.year': (y) => `Different year: Semantic Scholar records ${y}`,
     'oa.notfound': 'Not found in OpenAlex',
-    'oa.ok': (p) => `Found (${p}% similarity)`,
-    'oa.partial': (p) => `Partial result in OA (${p}%)`,
-    'oa.diff': (p) => `Different title in OA (${p}%)`,
-    'check.noparsing': 'No title or DOI detected — limited parsing',
+    'oa.ok': (p) => `Title matches in OpenAlex (${p}%)`,
+    'oa.partial': (p) => `Partial title match in OpenAlex (${p}%)`,
+    'oa.diff': (p) => `Title mismatch in OpenAlex (${p}%)`,
+    'check.noparsing': 'No title or DOI detected — limited verification',
     'warn.journal-nodoi': 'Journal article without DOI or link — should have an identifier',
     'apa.year-ok': 'Year with period after parenthesis', 'apa.year-nodot': 'Missing period after year parenthesis', 'apa.year-missing': 'Year not found in (YYYY) format',
     'apa.doi-url-ok': 'DOI in correct URL format', 'apa.doi-url-warn': 'DOI not in https://doi.org/... format',
@@ -688,12 +737,23 @@ const LANGS = {
     'apa.quotes': 'Title should not be in quotes in APA 7',
     'apa.dash-ok': 'En dash (–) in page ranges', 'apa.dash-warn': 'Use en dash (–) in page ranges',
     'apa.short': 'Reference very short — possibly incomplete',
+    'apa.italic-article-missing': 'No italics detected — journal name and volume must be in italics',
+    'apa.italic-journal-ok': 'Journal name in italics ✓',
+    'apa.italic-vol-missing': 'Volume number not in italics — must be italic along with the journal name',
+    'apa.italic-vol-ok': 'Volume in italics ✓',
+    'apa.italic-book-missing': 'No italics detected — book title must be in italics',
+    'apa.italic-book-ok': 'Book title in italics ✓',
+    'apa.italic-chapter-missing': 'No italics on source book title — must be italic in book chapters',
+    'apa.italic-chapter-ok': 'Source book title in italics ✓',
     'export.report-title': 'Bibliochecker — Reference Verification Report',
     'export.generated': (f) => `Generated on ${f}`,
     'export.disclaimer-title': '⚠️ Important notice — Human review required',
     'export.disclaimer-text': 'This report is an <strong>automated aid</strong>, not a final judgement. Results guide review but are not determinative. <strong>The only valid final criterion is that of the professional who verifies each reference directly in the original source.</strong>',
     'export.footer-name': 'Bibliochecker',
     'export.created-by': 'Created by Alexander Chinchilla Serrano · San José, Costa Rica · 2026',
+    'btn.export-word': '📄 Export Word', 'btn.export-excel': '📊 Export Excel',
+    'check.ok-summary': (n) => `${n} aspect${n===1?'':'s'} verified without issues`,
+    'check.no-problems': 'No issues detected from this source',
   }
 };
 
@@ -736,7 +796,8 @@ function aplicarIdioma() {
     const val = t(el.dataset.i18n);
     if (typeof val === 'string') el.innerHTML = val;
   });
-  document.getElementById('ref-input').placeholder = t('input.placeholder');
+  const ri = document.getElementById('ref-input');
+  if (ri) ri.setAttribute('data-placeholder', t('input.placeholder'));
   document.getElementById('footer-credit').innerHTML =
     `<strong>${t('footer.name')}</strong><br>${t('footer.by')}<br>${t('footer.loc')}`;
 }
@@ -756,10 +817,108 @@ document.querySelectorAll('.opt-pill').forEach(label => {
 });
 
 // ════════════════════════════════════════════════════════════
-// EJEMPLO
+// HELPERS para contenteditable
 // ════════════════════════════════════════════════════════════
+function getRefText() {
+  // Usar el texto guardado del pegado directo para evitar que el
+  // contenteditable deforme la estructura de líneas al releer
+  if (_textoParaAnalizar !== null) return _textoParaAnalizar;
+  const el = document.getElementById('ref-input');
+  return (el.innerText || '').trim();
+}
+function setRefText(txt) {
+  const el = document.getElementById('ref-input');
+  el.innerText = txt;
+}
+// Extraer texto con marcas de cursiva desde HTML pegado
+function extraerConCursivas(nodo) {
+  // Tags cuyos contenidos no son texto legible (CSS, scripts, metadatos)
+  const SKIP = new Set(['style','script','head','meta','link','noscript','title']);
+  let fmt = '', plain = '';
+  for (const h of nodo.childNodes) {
+    // Saltar nodos de comentario (<!-- ... -->) — contienen CSS de Word
+    if (h.nodeType === Node.COMMENT_NODE) continue;
+    if (h.nodeType === Node.TEXT_NODE) {
+      fmt += h.textContent; plain += h.textContent;
+    } else if (h.nodeType === Node.ELEMENT_NODE) {
+      const tag = h.tagName.toLowerCase();
+      // Saltar elementos que no aportan texto de referencia
+      if (SKIP.has(tag)) continue;
+      const isBlock = ['p','div','li','h1','h2','h3','h4','h5','h6','tr','td','th'].includes(tag);
+      const isItalic = tag === 'em' || tag === 'i' ||
+        h.style?.fontStyle === 'italic' ||
+        (h.getAttribute('style') || '').includes('font-style:italic') ||
+        (h.getAttribute('style') || '').includes('font-style: italic');
+      const br = tag === 'br';
+      const inner = extraerConCursivas(h);
+      const txt = inner.plain;
+      if (isItalic && txt.trim()) {
+        fmt += '\x02' + txt + '\x03';
+      } else {
+        fmt += inner.fmt;
+      }
+      plain += txt;
+      if (br) { fmt += '\n'; plain += '\n'; }
+      else if (isBlock && txt && !txt.endsWith('\n')) { fmt += '\n'; plain += '\n'; }
+    }
+  }
+  return { fmt, plain };
+}
+
+// Inicializar handler de pegado — captura cursivas desde Word/Google Docs/web
+(function() {
+  let _pasteFlag = false;
+  document.addEventListener('DOMContentLoaded', function() {
+    const el = document.getElementById('ref-input');
+    if (!el) return;
+
+    el.addEventListener('paste', function(e) {
+      e.preventDefault();
+      _pasteFlag = true;
+      _textoConFormato = null;
+      _textoParaAnalizar = null;
+
+      const html  = e.clipboardData.getData('text/html');
+      const plain = e.clipboardData.getData('text/plain');
+
+      if (html && html.trim()) {
+        const tmp = document.createElement('div');
+        // Extraer solo el <body> para descartar <head>/<style> de Word
+        const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+        tmp.innerHTML = bodyMatch ? bodyMatch[1] : html;
+        const { fmt, plain: txt } = extraerConCursivas(tmp);
+        const limpio  = txt.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+        const fmtNorm = fmt.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+        if (fmtNorm.includes('\x02')) _textoConFormato = fmtNorm;
+        // Guardar el texto limpio directamente — evita que el navegador
+        // deforme la estructura de líneas al releer innerText
+        _textoParaAnalizar = limpio;
+        document.execCommand('insertText', false, limpio);
+        mostrarAvisoPegado(limpio, fmtNorm.includes('\x02'));
+      } else {
+        const limpio = (plain||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim();
+        _textoParaAnalizar = limpio;
+        document.execCommand('insertText', false, limpio);
+        mostrarAvisoPegado(limpio, false);
+      }
+      setTimeout(() => { _pasteFlag = false; }, 0);
+    });
+
+    // Si el usuario edita manualmente, el texto guardado ya no es válido
+    el.addEventListener('input', function() {
+      if (!_pasteFlag) {
+        _textoConFormato = null;
+        _textoParaAnalizar = null;
+      }
+    });
+
+    // Sync placeholder lang on init
+    el.setAttribute('data-placeholder', LANGS[lang]['input.placeholder'] || '');
+  });
+})();
+
 function cargarEjemplo() {
-  document.getElementById('ref-input').value =
+  setRefText(
 `Nakashima, Y., & Ueshima, S. (2020). Factors associated with community participation after stroke: A systematic review. Topics in Stroke Rehabilitation, 27(4), 247–256. https://doi.org/10.1080/10749357.2019.1700458
 
 Bandura, A. (1997). Self-efficacy: The exercise of control. W. H. Freeman.
@@ -768,19 +927,65 @@ García-López, R., Martínez, A., & Pérez, B. (2024). Inteligencia artificial 
 
 LeCun, Y., Bengio, Y., & Hinton, G. (2015). Deep learning. Nature, 521(7553), 436–444. https://doi.org/10.1038/nature14539
 
-Smith, J. K., & Brown, L. T. (2023). Quantum neuromorphic computing in clinical oncology: A meta-analysis of randomized trials. Journal of Computational Medicine, 45(2), 112–130. https://doi.org/10.9999/jcm.2023.00001`;
+Smith, J. K., & Brown, L. T. (2023). Quantum neuromorphic computing in clinical oncology: A meta-analysis of randomized trials. Journal of Computational Medicine, 45(2), 112–130. https://doi.org/10.9999/jcm.2023.00001`);
+  _textoConFormato = null;
+  _textoParaAnalizar = null;
 }
 
 // ════════════════════════════════════════════════════════════
 // PARSER
 // ════════════════════════════════════════════════════════════
+
+// Helper: dado un bloque de texto que puede contener una o varias referencias,
+// intenta dividirlo usando el ancla de año (YYYY). Devuelve array de strings.
+function dividirPorAnclaAño(texto) {
+  const HAS_YEAR = /\(\d{4}[a-z]?\)/;
+  const YEAR_RE = /\(\d{4}[a-z]?\)\./g;
+  const yearMatches = [];
+  let ym;
+  while ((ym = YEAR_RE.exec(texto)) !== null) yearMatches.push(ym.index);
+  if (yearMatches.length <= 1) return [texto];
+
+  // Para cada año, buscar hacia atrás hasta 600 chars el inicio del autor
+  const refStarts = [];
+  for (const yIdx of yearMatches) {
+    const searchFrom = Math.max(0, yIdx - 600);
+    const ventana = texto.slice(searchFrom, yIdx);
+    let lastMatch = -1;
+    const authorRE = /[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ\-]{1,25},\s*[A-ZÁÉÍÓÚÜÑ]/g;
+    let am;
+    while ((am = authorRE.exec(ventana)) !== null) lastMatch = searchFrom + am.index;
+    if (lastMatch >= 0) refStarts.push(lastMatch);
+  }
+
+  const uniqueStarts = [...new Set(refStarts)].sort((a, b) => a - b);
+  if (uniqueStarts.length <= 1) return [texto];
+
+  const parts = [];
+  for (let i = 0; i < uniqueStarts.length; i++) {
+    const from = uniqueStarts[i];
+    const to   = i + 1 < uniqueStarts.length ? uniqueStarts[i + 1] : texto.length;
+    const chunk = texto.slice(from, to).replace(/\s+/g, ' ').trim();
+    if (chunk.length > 20 && HAS_YEAR.test(chunk)) parts.push(chunk);
+  }
+  return parts.length > 1 ? parts : [texto];
+}
+
 function parsearReferencias(texto) {
   texto = texto.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   const HAS_YEAR = /\(\d{4}[a-z]?\)/;
 
-  // Estrategia 1: líneas en blanco
+  // Estrategia 1: líneas en blanco.
+  // Sub-dividir cada bloque por si internamente contiene varias referencias.
   let bloques = texto.split(/\n\s*\n/).map(b => b.trim()).filter(b => b.length > 20);
-  if (bloques.length > 1) return bloques.map(b => parsearRef(b.replace(/^\d+[.)]\s*/, '').trim()));
+  if (bloques.length > 1) {
+    const refs = [];
+    for (const b of bloques) {
+      const sub = dividirPorAnclaAño(b);
+      for (const s of sub) refs.push(parsearRef(s.replace(/^\d+[.)]\s*/, '').trim()));
+    }
+    if (refs.length > 1) return refs;
+  }
 
   // Estrategia 2: lista numerada
   if (/\n\d+[.)]\s/.test(texto)) {
@@ -788,7 +993,8 @@ function parsearReferencias(texto) {
     if (bloques.length > 1) return bloques.map(b => parsearRef(b.replace(/^\d+[.)]\s*/, '').trim()));
   }
 
-  // Estrategia 3: detectar inicio de referencia APA por línea
+  // Estrategia 3: detectar inicio de referencia APA por línea.
+  // Ventana de 10 líneas para cubrir autores en listas largas.
   const lines = texto.split('\n');
   const PERSON_START = /^[A-ZÀ-Ü][a-zà-ü\-]+,\s*[A-ZÀ-Ü]/;
   const CORP_START   = /^[A-ZÀ-Ü][a-zà-ü\-A-Z\s]{4,40}\.\s+\(\d{4}/;
@@ -797,7 +1003,7 @@ function parsearReferencias(texto) {
     const line = lines[i].trim();
     if (line.length < 10) continue;
     if (PERSON_START.test(line) || CORP_START.test(line)) {
-      const context = lines.slice(i, Math.min(i + 3, lines.length)).join(' ');
+      const context = lines.slice(i, Math.min(i + 10, lines.length)).join(' ');
       if (HAS_YEAR.test(context)) startLines.push(i);
     }
   }
@@ -812,58 +1018,31 @@ function parsearReferencias(texto) {
     if (refs.length > 1) return refs;
   }
 
-  // Estrategia 4: anclar en año (YYYY) — el ancla más confiable en APA7.
-  // Para cada (YYYY) encontrado, buscamos hacia atrás el inicio del autor
-  // (patrón Apellido, I.) y usamos ese punto como inicio de referencia.
-  const YEAR_RE = /\(\d{4}[a-z]?\)\./g;
-  // Autor persona: Apellido, I.  o  Apellido-Compuesto, I.
-  const AUTHOR_START_RE = /[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ\-]{1,25},\s*[A-ZÁÉÍÓÚÜÑ]/;
-
-  const yearMatches = [];
-  let ym;
-  while ((ym = YEAR_RE.exec(texto)) !== null) yearMatches.push(ym.index);
-
-  if (yearMatches.length > 1) {
-    // Para cada año, buscar hacia atrás hasta 300 chars el inicio del autor
-    const refStarts = [];
-    for (const yIdx of yearMatches) {
-      const searchFrom = Math.max(0, yIdx - 300);
-      const window = texto.slice(searchFrom, yIdx);
-      // Encontrar la última ocurrencia del patrón de autor en esa ventana
-      let lastMatch = -1;
-      const authorRE = /[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ\-]{1,25},\s*[A-ZÁÉÍÓÚÜÑ]/g;
-      let am;
-      while ((am = authorRE.exec(window)) !== null) lastMatch = searchFrom + am.index;
-      if (lastMatch >= 0) refStarts.push(lastMatch);
-    }
-
-    // Eliminar duplicados y ordenar
-    const uniqueStarts = [...new Set(refStarts)].sort((a, b) => a - b);
-
-    if (uniqueStarts.length > 1) {
-      const parts = [];
-      for (let i = 0; i < uniqueStarts.length; i++) {
-        const from = uniqueStarts[i];
-        const to   = i + 1 < uniqueStarts.length ? uniqueStarts[i + 1] : texto.length;
-        const chunk = texto.slice(from, to).replace(/\s+/g, ' ').trim();
-        if (chunk.length > 20 && HAS_YEAR.test(chunk)) parts.push(chunk);
-      }
-      if (parts.length > 1) return parts.map(b => parsearRef(b.replace(/^\d+[.)]\s*/, '').trim()));
-    }
+  // Estrategia 4: anclar en año (YYYY) sobre el texto completo.
+  const partsAnno = dividirPorAnclaAño(texto);
+  if (partsAnno.length > 1) {
+    return partsAnno.map(b => parsearRef(b.replace(/^\d+[.)]\s*/, '').trim()));
   }
 
   // Fallback
   return [texto.trim()].filter(b => b.length > 20).map(b => parsearRef(b));
 }
 function parsearRef(texto) {
-  const ref = { texto_original: texto, doi: null, anio: null, autores: null, titulo: null };
-  const doiM = texto.match(/https?:\/\/doi\.org\/([^\s]+)|(?:^|[\s(])doi\.org\/([^\s]+)|(?:^|[\s(])(10\.\d{4,}\/[^\s,]+)/i);
+  // Strip italic markers for all text operations; keep original for italic checks
+  const textoLimpio = texto.replace(/\x02|\x03/g, '');
+  const tieneFormato = texto !== textoLimpio;
+  const ref = {
+    texto_original: textoLimpio,
+    texto_formato: tieneFormato ? texto : null,
+    doi: null, anio: null, autores: null, titulo: null
+  };
+  const doiM = textoLimpio.match(/https?:\/\/doi\.org\/([^\s]+)|(?:^|[\s(])doi\.org\/([^\s]+)|(?:^|[\s(])(10\.\d{4,}\/[^\s,]+)/i);
   if (doiM) ref.doi = doiM[0].replace(/https?:\/\/doi\.org\//i,'').replace(/doi\.org\//i,'').replace(/[.,;)\]]+$/,'');
-  const anioM = texto.match(/\((\d{4}[a-z]?)\)/);
+  const anioM = textoLimpio.match(/\((\d{4}[a-z]?)\)/);
   if (anioM) {
     ref.anio = anioM[1];
-    ref.autores = texto.substring(0, texto.indexOf(anioM[0])).replace(/\s+$/, '').replace(/\.$/, '').trim();
-    const rest = texto.substring(texto.indexOf(anioM[0]) + anioM[0].length).trim();
+    ref.autores = textoLimpio.substring(0, textoLimpio.indexOf(anioM[0])).replace(/\s+$/, '').replace(/\.$/, '').trim();
+    const rest = textoLimpio.substring(textoLimpio.indexOf(anioM[0]) + anioM[0].length).trim();
     const titM = rest.match(/^\.?\s*(.+?)\.\s/);
     if (titM) ref.titulo = titM[1].trim();
   }
@@ -886,9 +1065,45 @@ function validarAPA7(ref) {
   if (ref.autores && /[A-ZÁÉÍÓÚÑ][a-záéíóúñ\-]+(,\s*[A-ZÁÉÍÓÚÑ]\.)/.test(ref.autores)) ok.push('apa.authors-ok');
   else if (ref.autores && ref.autores.length > 3) warn.push('apa.authors-warn');
   if (/"[^"]+"|"[^"]+"|«[^»]+»/.test(tx)) warn.push('apa.quotes');
-  if (/\d+–\d+/.test(tx)) ok.push('apa.dash-ok');
-  else if (/\d+-\d+/.test(tx)) warn.push('apa.dash-warn');
+
   if (tx.length < 50) warn.push('apa.short');
+
+  // ── Italic checks (only when DOCX provides format info) ──────────────────
+  if (ref.texto_formato) {
+    const tf = ref.texto_formato;
+    // Collect all italic segments
+    const italicRE = /\x02([^\x03]+)\x03/g;
+    const italicParts = [];
+    let im;
+    while ((im = italicRE.exec(tf)) !== null) italicParts.push(im[1].trim());
+    const tipo = detectarTipoRef(ref);
+
+    if (tipo === 'articulo') {
+      // Journal name and volume should be italic
+      // Volume italic: any italic span ending with digits followed by (issue)
+      // Covers both separate span \x02 15 \x03( and combined \x02Journal Name, 15\x03(
+      const volItalic = /\x02[^\x03]*\d+\s*\x03\s*\(/.test(tf);
+      // Journal name: italic word(s) before the volume number, length > 3 chars
+      const journalItalic = italicParts.some(p => p.length > 3 && /[A-Za-z]/.test(p));
+      if (!journalItalic && !volItalic) {
+        warn.push('apa.italic-article-missing');
+      } else {
+        if (journalItalic) ok.push('apa.italic-journal-ok');
+        if (!volItalic && journalItalic) warn.push('apa.italic-vol-missing');
+        else if (volItalic) ok.push('apa.italic-vol-ok');
+      }
+    } else if (tipo === 'libro' || tipo === 'tesis') {
+      const hasItalicTitle = italicParts.some(p => p.length > 4);
+      if (!hasItalicTitle) warn.push('apa.italic-book-missing');
+      else ok.push('apa.italic-book-ok');
+    } else if (tipo === 'capitulo') {
+      // Book title (after "En") should be italic
+      const hasItalicBook = italicParts.some(p => p.length > 4);
+      if (!hasItalicBook) warn.push('apa.italic-chapter-missing');
+      else ok.push('apa.italic-chapter-ok');
+    }
+  }
+
   return { ok, warn };
 }
 
@@ -983,15 +1198,7 @@ function googleScholarLink(ref) {
 }
 
 // ════════════════════════════════════════════════════════════
-// COMPARACIÓN DE AUTORES (NUEVO)
-// Compara el primer apellido de la referencia contra los autores
-// encontrados en una API. Retorna {match, refFirst, foundFirst} o null.
-// ════════════════════════════════════════════════════════════
-// ════════════════════════════════════════════════════════════
-// DETECCIÓN DE ARTÍCULO DE REVISTA SIN DOI (NUEVO)
-// Retorna true si la referencia parece ser un artículo de revista.
-// Señales: CrossRef lo clasificó como journal-article, o el texto
-// tiene el patrón volumen(número) típico de citas de revista.
+// HELPERS DE DETECCIÓN
 // ════════════════════════════════════════════════════════════
 function detectarTipoRef(ref) {
   const tx = ref.texto_original;
@@ -1048,9 +1255,12 @@ let resultados_globales = [];
 // ANÁLISIS PRINCIPAL
 // ════════════════════════════════════════════════════════════
 async function analizarReferencias() {
-  const texto = document.getElementById('ref-input').value.trim();
+  const texto = getRefText();
   if (!texto) { alert(t('alert.empty')); return; }
-  const refs = parsearReferencias(texto);
+  const textoParaParsear = (_textoConFormato &&
+    _textoConFormato.replace(/|/g, '').trim() === texto)
+    ? _textoConFormato : texto;
+  const refs = parsearReferencias(textoParaParsear);
   if (!refs.length) { alert(t('alert.norefs')); return; }
 
   const optDOI      = document.getElementById('opt-doi').checked;
@@ -1148,12 +1358,6 @@ function calcularEstado(ref, cr, ss, oa, apa) {
 
 
 // ════════════════════════════════════════════════════════════
-// SCORE (0–100)
-// ════════════════════════════════════════════════════════════
-
-
-
-// ════════════════════════════════════════════════════════════
 // RESULTADOS
 // ════════════════════════════════════════════════════════════
 function mostrarResultados(resultados) {
@@ -1205,87 +1409,77 @@ function buildChecks(r) {
   if (r.estado === 'ok') {
     return `<ul class="checks"><li class="c-ok" style="font-size:12px">${t('check.ref-ok')}</li></ul>`;
   }
-  const items = [];
   const tag = (s) => `<span class="src-tag src-${s}">${s.toUpperCase()}</span>`;
+  const errors = [], warnings = [], okCount = { n: 0 };
+  const addOk  = () => okCount.n++;
+  const addErr = (src, msg) => errors.push(`<li class="c-err">${tag(src)} ${msg}</li>`);
+  const addWrn = (src, msg) => warnings.push(`<li class="c-warn">${tag(src)} ${msg}</li>`);
 
   // ── CrossRef ──
   if (r.cr) {
     if (r.cr.existe === false) {
-      items.push(`<li class="c-err">${tag('cr')} ${t('cr.notfound')}</li>`);
+      addErr('cr', t('cr.notfound'));
     } else if (r.cr.existe === null) {
-      items.push(`<li class="c-dim">${tag('cr')} ${t('cr.noresp')}</li>`);
+      addWrn('cr', t('cr.noresp'));
     } else {
-      items.push(`<li class="c-ok">${tag('cr')} ${t('cr.ok')}</li>`);
+      addOk();
       if (r.ref.titulo && r.cr.titulo) {
         const s = similitud(normalizar(r.ref.titulo), normalizar(r.cr.titulo));
-        if (s > 0.7) items.push(`<li class="c-ok">${tag('cr')} ${t('cr.title-ok', pct(s))}</li>`);
-        else if (s > 0.35) items.push(`<li class="c-warn">${tag('cr')} ${t('cr.title-partial', pct(s))}</li>`);
-        else items.push(`<li class="c-err">${tag('cr')} ${t('cr.title-diff', pct(s), esc((r.cr.titulo||'').substring(0,55)))}</li>`);
+        if (s > 0.7) addOk();
+        else if (s > 0.35) addWrn('cr', t('cr.title-partial', pct(s)));
+        else addErr('cr', t('cr.title-diff', pct(s), esc((r.cr.titulo||'').substring(0,55))));
       }
       if (r.ref.anio && r.cr.anio && String(r.ref.anio) !== String(r.cr.anio))
-        items.push(`<li class="c-err">${tag('cr')} ${t('cr.year-diff', r.ref.anio, r.cr.anio)}</li>`);
-      else if (r.cr.anio)
-        items.push(`<li class="c-ok">${tag('cr')} ${t('cr.year-ok', r.cr.anio)}</li>`);
+        addErr('cr', t('cr.year-diff', r.ref.anio, r.cr.anio));
+      else if (r.cr.anio) addOk();
       const ac = compararPrimerAutor(r.ref.autores, r.cr.autores);
-      if (ac) {
-        if (ac.match) items.push(`<li class="c-ok">${tag('cr')} ${t('cr.author-ok', ac.refFirst)}</li>`);
-        else items.push(`<li class="c-warn">${tag('cr')} ${t('cr.author-warn', ac.foundFirst)}</li>`);
-      }
+      if (ac) { ac.match ? addOk() : addWrn('cr', t('cr.author-warn', ac.foundFirst)); }
     }
   }
 
   // ── Semantic Scholar ──
   if (r.ss) {
     if (!r.ss.encontrado) {
-      items.push(`<li class="c-err">${tag('ss')} ${t('ss.notfound')}</li>`);
+      addWrn('ss', t('ss.notfound'));
     } else {
       const s = r.ss.similitud;
-      if (s > 0.65) items.push(`<li class="c-ok">${tag('ss')} ${t('ss.ok', pct(s))}</li>`);
-      else if (s > 0.35) items.push(`<li class="c-warn">${tag('ss')} ${t('ss.partial', pct(s))}</li>`);
-      else items.push(`<li class="c-warn">${tag('ss')} ${t('ss.diff', pct(s), esc((r.ss.titulo||'').substring(0,55)))}</li>`);
+      if (s > 0.65) addOk();
+      else if (s > 0.35) addWrn('ss', t('ss.partial', pct(s)));
+      else addWrn('ss', t('ss.diff', pct(s), esc((r.ss.titulo||'').substring(0,55))));
       if (r.ref.anio && r.ss.anio && String(r.ref.anio) !== String(r.ss.anio))
-        items.push(`<li class="c-warn">${tag('ss')} ${t('ss.year', r.ss.anio)}</li>`);
-      // Autores SS
+        addWrn('ss', t('ss.year', r.ss.anio));
       const as = compararPrimerAutor(r.ref.autores, r.ss.autores);
-      if (as) {
-        if (as.match) items.push(`<li class="c-ok">${tag('ss')} ${t('ss.author-ok', as.refFirst)}</li>`);
-        else items.push(`<li class="c-warn">${tag('ss')} ${t('ss.author-warn', as.foundFirst)}</li>`);
-      }
+      if (as) { as.match ? addOk() : addWrn('ss', t('ss.author-warn', as.foundFirst)); }
     }
   }
 
-  // ── OpenAlex ──
-  if (r.oa) {
+  // ── OpenAlex — solo si CrossRef y Semantic Scholar no confirmaron ya la referencia ──
+  // Si el DOI fue verificado por CrossRef, OpenAlex es redundante y genera falsos positivos
+  const crConfirmado = r.cr?.existe === true;
+  const ssConfirmado = r.ss?.encontrado && r.ss.similitud >= 0.65;
+  if (r.oa && !crConfirmado && !ssConfirmado) {
     if (!r.oa.encontrado) {
-      items.push(`<li class="c-err">${tag('oa')} ${t('oa.notfound')}</li>`);
+      addWrn('oa', t('oa.notfound'));
     } else {
       const s = r.oa.similitud;
-      if (s > 0.65) items.push(`<li class="c-ok">${tag('oa')} ${t('oa.ok', pct(s))}</li>`);
-      else if (s > 0.35) items.push(`<li class="c-warn">${tag('oa')} ${t('oa.partial', pct(s))}</li>`);
-      else items.push(`<li class="c-warn">${tag('oa')} ${t('oa.diff', pct(s))}</li>`);
-      // Autores OA
+      if (s < 0.40) addWrn('oa', t('oa.diff', pct(s)));
       const ao = compararPrimerAutor(r.ref.autores, r.oa.autores);
-      if (ao) {
-        if (ao.match) items.push(`<li class="c-ok">${tag('oa')} ${t('oa.author-ok', ao.refFirst)}</li>`);
-        else items.push(`<li class="c-warn">${tag('oa')} ${t('oa.author-warn', ao.foundFirst)}</li>`);
-      }
+      if (ao && !ao.match) addWrn('oa', t('oa.author-warn', ao.foundFirst));
     }
   }
 
   // ── APA 7 ──
-  r.apa.ok.forEach(key   => items.push(`<li class="c-ok">${tag('apa')} ${esc(t(key))}</li>`));
-  r.apa.warn.forEach(key => items.push(`<li class="c-warn">${tag('apa')} ${esc(t(key))}</li>`));
+  r.apa.warn.forEach(key => addWrn('apa', esc(t(key))));
+  r.apa.ok.forEach(() => addOk());
 
-  if (!r.ref.titulo && !r.ref.doi) items.push(`<li class="c-dim">${t('check.noparsing')}</li>`);
+  if (!r.ref.titulo && !r.ref.doi) errors.push(`<li class="c-dim">${t('check.noparsing')}</li>`);
+  if (!r.ref.doi && esArticuloDeRevista(r.ref, r.cr)) addWrn('apa', t('warn.journal-nodoi'));
 
-  // Artículo de revista sin DOI → aviso visible
-  if (!r.ref.doi && esArticuloDeRevista(r.ref, r.cr)) {
-    items.push(`<li class="c-warn">${t('warn.journal-nodoi')}</li>`);
-  }
-
-
-
-  return `<ul class="checks">${items.join('')}</ul>`;
+  const allProblems = [...errors, ...warnings];
+  const summary = okCount.n > 0
+    ? `<li class="c-dim checks-ok-sum" style="margin-top:4px;font-size:11px;border-top:1px solid var(--border);padding-top:4px">✓ ${t('check.ok-summary', okCount.n)}</li>`
+    : '';
+  return `<ul class="checks">${allProblems.join('')}${summary}</ul>`;
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1299,16 +1493,44 @@ function exportarHTML() {
   const errores = resultados_globales.filter(r=>r.estado==='error').length;
   const estadoMap = { ok:`✅ ${t('badge.ok')}`, warn:`⚠️ ${t('badge.warn')}`, error:`❌ ${t('badge.error')}`, nodoi:`🔗 ${t('badge.nodoi')}` };
 
+  const stCls = { ok:'st-ok', warn:'st-w', error:'st-e', nodoi:'st-n' };
   let rows = '';
   resultados_globales.forEach((r, i) => {
     const checks = buildChecksPlain(r);
-    let doiCell = '—';
-    if (r.ref.doi) doiCell = `<a href="https://doi.org/${r.ref.doi}" style="color:#2e86c1">${r.ref.doi}</a>${r.cr?.existe===true?' ✓':r.cr?.existe===false?' ✗':''}`;
-    rows += `<tr><td>${i+1}</td><td>${estadoMap[r.estado]||r.estado}</td><td style="max-width:320px;font-size:12px">${r.ref.texto_original.replace(/</g,'&lt;')}</td><td>${doiCell}<br><a href="${googleScholarLink(r.ref)}" style="color:#d4ac0d" target="_blank">${t('gs.link')} ↗</a></td><td style="font-size:11px">${checks}</td></tr>`;
+    let doiCell = '<span style="color:#999">—</span>';
+    if (r.ref.doi) doiCell = `<span class="doi-s"><a href="https://doi.org/${r.ref.doi}" style="color:#1a6391">${r.ref.doi}</a>${r.cr?.existe===true?' ✓':r.cr?.existe===false?' ✗':''}</span>`;
+    const cls = stCls[r.estado] || 'st-n';
+    rows += `<tr><td style="text-align:center">${i+1}</td><td class="${cls}">${estadoMap[r.estado]||r.estado}</td><td>${r.ref.texto_original.replace(/</g,'&lt;')}</td><td>${doiCell}</td><td><ul class="chk">${checks}</ul></td></tr>`;
   });
 
   const html = `<!DOCTYPE html><html lang="${lang}"><head><meta charset="UTF-8"><title>${t('export.report-title')} — ${fecha}</title>
-<style>body{font-family:Arial,sans-serif;padding:30px;color:#1a1a2e;max-width:1100px;margin:0 auto}h1{color:#1a1060;font-size:22px}table{width:100%;border-collapse:collapse;margin-top:20px;font-size:13px}th{background:#1a1060;color:white;padding:10px 12px;text-align:left}td{padding:9px 12px;border-bottom:1px solid #ddd;vertical-align:top}tr:nth-child(even){background:#f7f7fd}.pills{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}.pill{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600}.p-t{background:#eaf2fb;color:#2e86c1}.p-o{background:#d5f5e3;color:#1e8449}.p-w{background:#fef9e7;color:#b7950b}.p-e{background:#fce4e4;color:#c0392b}.aviso{background:#fffbea;border:2px solid #f59e0b;border-radius:8px;padding:16px 20px;margin:20px 0;font-size:13px;color:#78350f;line-height:1.7}.aviso-titulo{font-weight:700;font-size:14px;color:#92400e;margin-bottom:6px}.footer-rep{margin-top:32px;padding-top:16px;border-top:2px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12px;color:#6b7280}.footer-rep strong{color:#374151}</style>
+<style>
+  @page { size: A4 portrait; margin: 1.8cm 1.5cm; }
+  body { font-family: Arial, sans-serif; color: #1a1a2e; margin: 0; padding: 20px; font-size: 10pt; }
+  h1 { color: #1a1060; font-size: 16pt; margin-bottom: 4pt; }
+  p.sub { font-size: 9pt; color: #555; margin: 0 0 10pt; }
+  .pills { display: flex; gap: 8pt; flex-wrap: wrap; margin: 10pt 0; }
+  .pill { padding: 3pt 9pt; border-radius: 12pt; font-size: 9pt; font-weight: 700; }
+  .p-t{background:#eaf2fb;color:#1a6391} .p-o{background:#d5f5e3;color:#1e6a3a}
+  .p-w{background:#fef9e7;color:#7a5c00} .p-e{background:#fce4e4;color:#8b1a1a}
+  .aviso { background:#fffbea; border:1.5pt solid #f59e0b; border-radius:5pt; padding:9pt 12pt; margin:10pt 0; font-size:9pt; color:#78350f; line-height:1.6; }
+  .aviso-titulo { font-weight:700; font-size:9.5pt; color:#92400e; margin-bottom:4pt; }
+  table { width:100%; border-collapse:collapse; margin-top:10pt; font-size:8.5pt; table-layout:fixed; }
+  colgroup col.c-n  { width:22pt }
+  colgroup col.c-st { width:54pt }
+  colgroup col.c-ref{ width:185pt }
+  colgroup col.c-src{ width:85pt }
+  colgroup col.c-chk{ width:130pt }
+  th { background:#1a1060; color:white; padding:5pt 6pt; text-align:left; font-size:8pt; }
+  td { padding:5pt 6pt; border:0.5pt solid #d0d0d0; vertical-align:top; word-break:break-word; line-height:1.4; }
+  tr:nth-child(even) td { background:#f7f7fd; }
+  .st-ok{color:#166534;font-weight:bold} .st-w{color:#92400e;font-weight:bold} .st-e{color:#8b1a1a;font-weight:bold} .st-n{color:#555;font-weight:bold}
+  ul.chk { margin:0; padding-left:12pt; list-style:disc; font-size:8pt; }
+  ul.chk li { margin-bottom:1pt; line-height:1.35; }
+  .doi-s { font-size:7.5pt; color:#1a6391; word-break:break-all; }
+  .footer-rep { margin-top:18pt; padding-top:10pt; border-top:1pt solid #e5e7eb; font-size:8pt; color:#6b7280; }
+  .footer-rep strong { color:#374151; }
+</style>
 </head><body>
 <h1>🔬 ${t('export.report-title')}</h1>
 <p>${t('export.generated', fecha)} · CrossRef · Semantic Scholar · OpenAlex · Google Scholar</p>
@@ -1317,7 +1539,8 @@ function exportarHTML() {
   <div class="pill p-t">📚 ${t('stats.total')}: ${total}</div><div class="pill p-o">${t('stats.ok')}: ${validas}</div>
   <div class="pill p-w">${t('stats.warn')}: ${warn}</div><div class="pill p-e">${t('stats.error')}: ${errores}</div>
 </div>
-<table><thead><tr><th>${t('th.n')}</th><th>${t('th.estado')}</th><th>${t('th.ref')}</th><th>${t('th.fuentes')}</th><th>${t('th.checks')}</th></tr></thead>
+<table><colgroup><col class="c-n"><col class="c-st"><col class="c-ref"><col class="c-src"><col class="c-chk"></colgroup>
+<thead><tr><th>${t('th.n')}</th><th>${t('th.estado')}</th><th>${t('th.ref')}</th><th>DOI</th><th>${lang==='es'?'Observaciones':'Observations'}</th></tr></thead>
 <tbody>${rows}</tbody></table>
 <div class="footer-rep">
   <div><strong>${t('export.footer-name')}</strong> · ${t('export.created-by')}</div>
@@ -1331,6 +1554,234 @@ function exportarHTML() {
     download: `${lang==='es'?'Reporte':'Report'}-Referencias-${new Date().toISOString().slice(0,10)}.html`
   });
   a.click();
+}
+
+function exportarWord() {
+  const fecha = new Date().toLocaleDateString(lang === 'es' ? 'es-CR' : 'en-US', { year:'numeric', month:'long', day:'numeric' });
+  const total   = resultados_globales.length;
+  const validas = resultados_globales.filter(r=>r.estado==='ok').length;
+  const warn    = resultados_globales.filter(r=>r.estado==='warn').length;
+  const errores = resultados_globales.filter(r=>r.estado==='error').length;
+  const estadoMap = { ok:`OK ${t('badge.ok')}`, warn:`[!] ${t('badge.warn')}`, error:`[X] ${t('badge.error')}`, nodoi:`[?] ${t('badge.nodoi')}` };
+
+  let rows = '';
+  resultados_globales.forEach((r, i) => {
+    const checks = buildChecksWord(r);
+    const doiTxt = r.ref.doi ? `https://doi.org/${r.ref.doi}${r.cr?.existe===true?' [OK]':r.cr?.existe===false?' [NO ENCONTRADO]':''}` : '—';
+    const colorFondo = r.estado==='ok' ? '#f0fdf4' : r.estado==='error' ? '#fef2f2' : '#fffbeb';
+    rows += `<tr>
+      <td style="text-align:center;font-weight:bold;background:${colorFondo}">${i+1}</td>
+      <td style="font-weight:bold;background:${colorFondo};color:${r.estado==='ok'?'#166534':r.estado==='error'?'#991b1b':'#92400e'}">${estadoMap[r.estado]||r.estado}</td>
+      <td style="background:${colorFondo}">${r.ref.texto_original.replace(/</g,'&lt;')}</td>
+      <td style="font-size:8pt;color:#374151;word-break:break-all;background:${colorFondo}">${doiTxt}</td>
+      <td style="background:${colorFondo}">${checks}</td>
+    </tr>`;
+  });
+
+  // Word usa WordSection1 para configuración de página — más confiable que @page genérico
+  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:w="urn:schemas-microsoft-com:office:word"
+    xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Bibliochecker">
+<title>${t('export.report-title')}</title>
+<!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>90</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+  /* Sección Word — define orientación y márgenes vía regla nombrada */
+  @page WordSection1 {
+    size: 21.0cm 29.7cm;
+    mso-page-orientation: portrait;
+    margin: 2.0cm 1.8cm 2.0cm 1.8cm;
+    mso-header-margin: 35.4pt;
+    mso-footer-margin: 35.4pt;
+    mso-paper-source: 0;
+  }
+  div.Section1 { page: WordSection1; }
+
+  body { font-family: Calibri, Arial, sans-serif; font-size: 10pt; color: #1a1a1a; line-height: 1.4; }
+  h1 { font-size: 14pt; color: #1e3a8a; margin-bottom: 4pt; }
+  h2 { font-size: 11pt; color: #1e3a8a; margin: 14pt 0 5pt; border-bottom: 0.5pt solid #93c5fd; padding-bottom: 2pt; }
+  p { margin: 3pt 0; font-size: 9.5pt; }
+  .aviso { background: #fffbea; border: 1pt solid #f59e0b; padding: 8pt 11pt; margin: 10pt 0; }
+  .aviso-t { font-weight: bold; color: #92400e; font-size: 10pt; }
+  /* Tabla principal: anchos fijos que caben en A4 retrato con márgenes 1.8cm */
+  table.main-tbl { border-collapse: collapse; margin: 10pt 0; font-size: 8.5pt; table-layout: fixed; width: 468pt; }
+  col.cw-n  { width: 18pt; }
+  col.cw-st { width: 52pt; }
+  col.cw-ref{ width: 182pt; }
+  col.cw-doi{ width: 82pt; }
+  col.cw-chk{ width: 134pt; }
+  th { background: #1e3a8a; color: white; padding: 5pt 5pt; text-align: left; font-size: 8pt; }
+  td { padding: 4pt 5pt; border: 0.4pt solid #d1d5db; vertical-align: top; word-break: break-word; line-height: 1.35; }
+  ul.checks-w { margin: 0; padding-left: 11pt; list-style: disc; }
+  ul.checks-w li { margin-bottom: 1.5pt; font-size: 8pt; }
+  .footer-w { margin-top: 18pt; padding-top: 8pt; border-top: 0.5pt solid #e5e7eb; font-size: 8pt; color: #6b7280; }
+  /* Tabla de estadísticas pequeña */
+  table.stats-tbl { border-collapse: collapse; margin: 8pt 0; font-size: 9pt; }
+  table.stats-tbl td { border: 0.4pt solid #d1d5db; padding: 4pt 10pt; font-weight: bold; }
+</style>
+</head><body>
+<div class="Section1">
+<h1>Bibliochecker — ${t('export.report-title')}</h1>
+<p>${t('export.generated', fecha)} &middot; CrossRef &middot; Semantic Scholar &middot; OpenAlex</p>
+
+<div class="aviso">
+  <p class="aviso-t">${t('export.disclaimer-title')}</p>
+  <p>${lang==='es'?'Este reporte es un apoyo automatizado, no un dictamen definitivo. El único criterio final válido es el del profesional que corrobora cada referencia directamente en la fuente original.':'This report is an automated aid, not a final judgement. The only valid final criterion is that of the professional who verifies each reference directly in the original source.'}</p>
+</div>
+
+<table class="stats-tbl"><tr>
+  <td style="background:#dbeafe;color:#1e3a8a">${t('stats.total')}: ${total}</td>
+  <td style="background:#dcfce7;color:#166534">${t('stats.ok')}: ${validas}</td>
+  <td style="background:#fef9c3;color:#92400e">${t('stats.warn')}: ${warn}</td>
+  <td style="background:#fee2e2;color:#991b1b">${t('stats.error')}: ${errores}</td>
+</tr></table>
+
+<h2>${lang==='es'?'Resultados detallados':'Detailed results'}</h2>
+<table class="main-tbl">
+<colgroup><col class="cw-n"><col class="cw-st"><col class="cw-ref"><col class="cw-doi"><col class="cw-chk"></colgroup>
+<thead><tr>
+  <th>#</th><th>${t('th.estado')}</th><th>${t('th.ref')}</th><th>DOI</th><th>${lang==='es'?'Observaciones':'Observations'}</th>
+</tr></thead>
+<tbody>${rows}</tbody>
+</table>
+
+<div class="footer-w">
+  <strong>Bibliochecker</strong> &middot; ${t('export.created-by')}<br>
+  ${lang==='es'?'Licencia':'License'}: CC BY-NC-SA 4.0
+</div>
+</div>
+</body></html>`;
+
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob(['﻿' + wordHtml], {type:'application/msword'})),
+    download: `${lang==='es'?'Reporte':'Report'}-Referencias-${new Date().toISOString().slice(0,10)}.doc`
+  });
+  a.click();
+}
+
+function exportarExcel() {
+  const fecha = new Date().toLocaleDateString(lang === 'es' ? 'es-CR' : 'en-US', { year:'numeric', month:'long', day:'numeric' });
+  const estadoMap = { ok: t('badge.ok'), warn: t('badge.warn'), error: t('badge.error'), nodoi: t('badge.nodoi') };
+
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  // Aplanar observaciones a texto plano
+  function checksTexto(r) {
+    if (r.estado === 'ok') return t('check.ref-ok');
+    const problems = [];
+    if (r.cr?.existe === false) problems.push(t('cr.notfound'));
+    else if (r.cr?.existe) {
+      if (r.ref.titulo && r.cr.titulo) {
+        const s = similitud(normalizar(r.ref.titulo), normalizar(r.cr.titulo));
+        if (s <= 0.7) problems.push(t('cr.title-partial', pct(s)));
+      }
+      if (r.ref.anio && r.cr.anio && String(r.ref.anio) !== String(r.cr.anio))
+        problems.push(t('cr.year-diff', r.ref.anio, r.cr.anio));
+      const ac = compararPrimerAutor(r.ref.autores, r.cr.autores);
+      if (ac && !ac.match) problems.push(t('cr.author-warn', ac.foundFirst));
+    }
+    if (r.ss?.encontrado && r.ss.similitud < 0.65) problems.push(t('ss.partial', pct(r.ss.similitud)));
+    if (r.oa?.encontrado && r.oa.similitud < 0.40) problems.push(t('oa.diff', pct(r.oa.similitud)));
+    r.apa.warn.forEach(key => problems.push('APA: ' + t(key)));
+    if (!r.ref.doi && esArticuloDeRevista(r.ref, r.cr)) problems.push(t('warn.journal-nodoi'));
+    return problems.join(' | ');
+  }
+
+  let rows = '';
+  resultados_globales.forEach((r, i) => {
+    const doi = r.ref.doi ? `https://doi.org/${r.ref.doi}` : '';
+    const verificadoDoi = r.cr?.existe === true ? (lang==='es'?'Sí':'Yes') : r.cr?.existe === false ? 'No' : '—';
+    rows += `<Row>
+      <Cell><Data ss:Type="Number">${i+1}</Data></Cell>
+      <Cell><Data ss:Type="String">${esc(estadoMap[r.estado]||r.estado)}</Data></Cell>
+      <Cell><Data ss:Type="String">${esc(r.ref.texto_original)}</Data></Cell>
+      <Cell><Data ss:Type="String">${esc(r.ref.autores?.[0]?.apellido||'')}</Data></Cell>
+      <Cell><Data ss:Type="String">${esc(r.ref.anio||'')}</Data></Cell>
+      <Cell><Data ss:Type="String">${esc(r.ref.titulo||'')}</Data></Cell>
+      <Cell><Data ss:Type="String">${esc(doi)}</Data></Cell>
+      <Cell><Data ss:Type="String">${esc(verificadoDoi)}</Data></Cell>
+      <Cell><Data ss:Type="String">${esc(checksTexto(r))}</Data></Cell>
+    </Row>`;
+  });
+
+  const hdr = (s) => `<Cell ss:StyleID="hdr"><Data ss:Type="String">${esc(s)}</Data></Cell>`;
+  const cols = lang==='es'
+    ? ['#','Estado','Referencia completa','Primer autor','Año','Título','DOI','DOI verificado','Observaciones']
+    : ['#','Status','Full reference','First author','Year','Title','DOI','DOI verified','Observations'];
+
+  const xlsXml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Title>${lang==='es'?'Reporte de referencias':'Reference report'}</Title>
+  <Author>Bibliochecker</Author>
+  <Created>${new Date().toISOString()}</Created>
+</DocumentProperties>
+<Styles>
+  <Style ss:ID="hdr">
+    <Font ss:Bold="1" ss:Color="#FFFFFF"/>
+    <Interior ss:Color="#1E3A8A" ss:Pattern="Solid"/>
+    <Alignment ss:WrapText="1"/>
+  </Style>
+  <Style ss:ID="Default">
+    <Alignment ss:WrapText="1" ss:Vertical="Top"/>
+  </Style>
+</Styles>
+<Worksheet ss:Name="${lang==='es'?'Referencias':'References'}">
+<Table>
+  <Column ss:Width="25"/>
+  <Column ss:Width="70"/>
+  <Column ss:Width="250"/>
+  <Column ss:Width="90"/>
+  <Column ss:Width="40"/>
+  <Column ss:Width="200"/>
+  <Column ss:Width="120"/>
+  <Column ss:Width="70"/>
+  <Column ss:Width="200"/>
+  <Row>${cols.map(hdr).join('')}</Row>
+  ${rows}
+</Table>
+</Worksheet>
+</Workbook>`;
+
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob(['﻿' + xlsXml], {type:'application/vnd.ms-excel'})),
+    download: `${lang==='es'?'Reporte':'Report'}-Referencias-${new Date().toISOString().slice(0,10)}.xls`
+  });
+  a.click();
+}
+
+function buildChecksWord(r) {
+  if (r.estado === 'ok') return `<span style="color:#166534">${t('check.ref-ok')}</span>`;
+  const problems = [];
+  if (r.cr?.existe === false) problems.push(`❌ ${t('cr.notfound')}`);
+  else if (r.cr?.existe) {
+    if (r.ref.titulo && r.cr.titulo) {
+      const s = similitud(normalizar(r.ref.titulo), normalizar(r.cr.titulo));
+      if (s <= 0.7) problems.push(`⚠️ ${t('cr.title-partial', pct(s))}`);
+    }
+    if (r.ref.anio && r.cr.anio && String(r.ref.anio) !== String(r.cr.anio))
+      problems.push(`❌ ${t('cr.year-diff', r.ref.anio, r.cr.anio)}`);
+    const ac = compararPrimerAutor(r.ref.autores, r.cr.autores);
+    if (ac && !ac.match) problems.push(`⚠️ ${t('cr.author-warn', ac.foundFirst)}`);
+  }
+  if (r.ss?.encontrado && r.ss.similitud < 0.65) problems.push(`⚠️ ${t('ss.partial', pct(r.ss.similitud))}`);
+  if (r.oa?.encontrado && r.oa.similitud < 0.40) problems.push(`⚠️ ${t('oa.diff', pct(r.oa.similitud))}`);
+  r.apa.warn.forEach(key => problems.push(`⚠️ APA: ${t(key)}`));
+  if (!r.ref.doi && esArticuloDeRevista(r.ref, r.cr)) problems.push(`⚠️ ${t('warn.journal-nodoi')}`);
+  if (!problems.length) return `<span style="color:#166534">${t('check.ref-ok')}</span>`;
+  return `<ul class="checks-w">${problems.map(p=>`<li>${p}</li>`).join('')}</ul>`;
 }
 
 function buildChecksPlain(r) {
@@ -1357,16 +1808,51 @@ function buildChecksPlain(r) {
     if (ao) items.push(ao.match ? `✅ ${t('oa.author-ok', ao.refFirst)}` : `⚠️ ${t('oa.author-warn', ao.foundFirst)}`);
   } else if (r.oa) items.push(`❌ ${t('oa.notfound')}`);
   r.apa.warn.forEach(key => items.push(`⚠️ APA: ${t(key)}`));
-  return items.join('<br>') || '—';
+  return items.map(i => `<li>${i}</li>`).join('') || '<li>—</li>';
 }
 
 // ════════════════════════════════════════════════════════════
 // UI HELPERS
 // ════════════════════════════════════════════════════════════
-function limpiar() { document.getElementById('ref-input').value = ''; }
+function contarReferencias(texto) {
+  // Usa el mismo parser real para que el conteo coincida con el análisis
+  return parsearReferencias(texto.replace(/\x02|\x03/g, '')).length;
+}
+
+function mostrarAvisoPegado(texto, tieneCursivas) {
+  const el = document.getElementById('paste-notice');
+  if (!el || !texto.trim()) { if (el) el.style.display = 'none'; return; }
+  const n = contarReferencias(texto);
+  const es = lang === 'es';
+  const italMsg = tieneCursivas
+    ? `✓ ${es ? 'Cursivas detectadas.' : 'Italics detected.'} `
+    : '';
+  el.style.display = 'flex';
+  el.innerHTML = `<span class="pn-icon">📋</span><div>
+    <span class="pn-count">${n}</span> ${es ? `referencia${n===1?'':'s'} detectada${n===1?'':'s'}.` : `reference${n===1?'':'s'} detected.`}
+    ${italMsg}<br>
+    <span class="pn-warn">⚠ ${es
+      ? 'Verificá que esta cantidad coincida con el total real de tu lista antes de analizar.'
+      : 'Verify that this count matches the actual total in your list before analyzing.'
+    }</span>
+  </div>`;
+}
+
+function limpiar() {
+  setRefText('');
+  _textoConFormato = null;
+  _textoParaAnalizar = null;
+  document.getElementById('file-status').textContent = '';
+  const pn = document.getElementById('paste-notice');
+  if (pn) pn.style.display = 'none';
+}
 function nuevaConsulta() {
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('input-section').style.display = 'block';
+  const pn = document.getElementById('paste-notice');
+  if (pn) pn.style.display = 'none';
+  _textoConFormato = null;
+  _textoParaAnalizar = null;
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1378,19 +1864,38 @@ async function leerDOCX(file) {
   const xmlFile = zip.file('word/document.xml');
   if (!xmlFile) throw new Error('No se encontró word/document.xml');
   const xmlText = await xmlFile.async('string');
-  // Extraer texto de párrafos <w:p> respetando saltos de párrafo
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlText, 'application/xml');
-  const paragraphs = doc.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'p');
+  const W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  const paragraphs = doc.getElementsByTagNameNS(W, 'p');
   const lines = [];
   for (const p of paragraphs) {
-    const runs = p.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 't');
+    const runs = p.getElementsByTagNameNS(W, 'r');
     let line = '';
-    for (const r of runs) line += r.textContent;
+    for (const run of runs) {
+      // Detect italic: <w:rPr> contains <w:i/> without w:val="false"
+      const rPr = run.getElementsByTagNameNS(W, 'rPr')[0];
+      let isItalic = false;
+      if (rPr) {
+        const iEl = rPr.getElementsByTagNameNS(W, 'i')[0];
+        if (iEl) {
+          const val = iEl.getAttributeNS(W, 'val');
+          isItalic = val !== 'false' && val !== '0';
+        }
+      }
+      const tEls = run.getElementsByTagNameNS(W, 't');
+      let runText = '';
+      for (const t of tEls) runText += t.textContent;
+      if (runText) line += isItalic ? `\x02${runText}\x03` : runText;
+    }
     lines.push(line);
   }
   return lines.join('\n');
 }
+
+// Texto con marcas de cursiva (\x02...\x03), sólo disponible al cargar .docx
+let _textoConFormato = null;
+let _textoParaAnalizar = null; // texto extraído directamente al pegar, sin releer el div
 
 async function cargarDesdeArchivo(input) {
   const file = input.files[0];
@@ -1402,11 +1907,16 @@ async function cargarDesdeArchivo(input) {
       status.textContent = lang === 'es' ? '✗ Solo se aceptan archivos .docx' : '✗ Only .docx files accepted';
       return;
     }
-    const texto = await leerDOCX(file);
-    if (texto) {
-      const seccion = extraerSeccionReferencias(texto);
-      document.getElementById('ref-input').value = seccion.trim();
-      status.textContent = lang === 'es' ? `✓ ${file.name} cargado` : `✓ ${file.name} loaded`;
+    const textoFormato = await leerDOCX(file);
+    if (textoFormato) {
+      _textoConFormato = textoFormato.trim();
+      const textoLimpio = _textoConFormato.replace(/|/g, '');
+      _textoParaAnalizar = textoLimpio;
+      setRefText(textoLimpio);
+      const hasItalics = _textoConFormato.includes('\x02');
+      const nota = hasItalics ? (lang==='es'?' · cursivas detectadas ✓':' · italics detected ✓') : '';
+      status.textContent = (lang === 'es' ? `✓ ${file.name} cargado` : `✓ ${file.name} loaded`) + nota;
+      mostrarAvisoPegado(textoLimpio, hasItalics);
     } else {
       status.textContent = lang === 'es' ? '✗ No se pudo leer el archivo' : '✗ Could not read file';
     }
@@ -1417,26 +1927,6 @@ async function cargarDesdeArchivo(input) {
   input.value = '';
 }
 
-
-function extraerSeccionReferencias(texto) {
-  const markers = [
-    /^referencias?\s*bibliogr[áa]ficas?\s*$/im,
-    /^referencias?\s*$/im,
-    /^references?\s*$/im,
-    /^bibliograf[ií]a\s*$/im,
-    /^bibliography\s*$/im,
-    /^fuentes?\s*$/im,
-    /^fuentes?\s*consultadas?\s*$/im,
-  ];
-  for (const marker of markers) {
-    const match = marker.exec(texto);
-    if (match) {
-      const after = texto.substring(match.index + match[0].length).trim();
-      if (after.length > 50) return after;
-    }
-  }
-  return texto;
-}
 
 // ════════════════════════════════════════════════════════════
 // INIT

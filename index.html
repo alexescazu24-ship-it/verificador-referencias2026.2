@@ -384,7 +384,7 @@ body { font-family: var(--font-body); }
     .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; text-align:center; }
     .stat-num { font-size:28px; font-weight:800; margin-bottom:4px; }
     .stat-label { font-size:11.5px; color:var(--texto-dim); font-weight:500; }
-    .stat-total .stat-num{color:var(--accent2)} .stat-ok .stat-num{color:var(--verde)} .stat-warn .stat-num{color:var(--amarillo)} .stat-error .stat-num{color:var(--rojo)} .stat-nodoi .stat-num{color:var(--texto-dim)}
+    .stat-total .stat-num{color:var(--accent2)} .stat-ok .stat-num{color:var(--verde)} .stat-warn .stat-num{color:var(--amarillo)} .stat-error .stat-num{color:var(--rojo)} .stat-nodoi .stat-num{color:var(--texto-dim)} .stat-retracted .stat-num{color:var(--rojo)}
 
     .table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:var(--radio); }
     table { width:100%; border-collapse:collapse; font-size:13px; }
@@ -404,6 +404,7 @@ body { font-family: var(--font-body); }
     .s-warn{color:var(--amarillo);border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.08)}
     .s-error{color:var(--rojo);border-color:rgba(248,113,113,0.3);background:rgba(248,113,113,0.08)}
     .s-nodoi{color:var(--texto-dim);border-color:var(--border);background:var(--surface2)}
+    .s-retracted{color:#fff;border-color:var(--rojo);background:var(--rojo)}
 
     .checks { list-style:none; margin:0; padding:0; }
     .checks li { font-size:11.5px; padding:2px 0; display:flex; align-items:baseline; gap:5px; line-height:1.5; }
@@ -672,9 +673,11 @@ const LANGS = {
     'results.heading': '📊 Resultados',
     'btn.export': '⬇ Exportar reporte', 'btn.pdf': '🖨 PDF', 'btn.nueva': '← Nueva consulta',
     'stats.total': 'Total', 'stats.ok': '✅ Válidas', 'stats.warn': '⚠️ Sospechosas', 'stats.error': '❌ Problema', 'stats.nodoi': '🔗 Sin DOI',
+    'stats.retracted': '🚫 Retractadas',
     'check.ref-ok': 'Referencia correcta — sin inconsistencias detectadas.',
     'th.n': '#', 'th.estado': 'Estado', 'th.ref': 'Referencia', 'th.fuentes': 'Fuentes', 'th.checks': 'Verificaciones',
     'badge.ok': 'Válida', 'badge.warn': 'Sospechosa', 'badge.error': 'Problema', 'badge.nodoi': 'Sin DOI',
+    'badge.retracted': 'Retractado',
     'gs.link': '🎓 Google Scholar',
     'btn.copy-ref': 'Copiar referencia',
     'btn.copy': 'Copiar',
@@ -692,7 +695,10 @@ const LANGS = {
     'cr.title-partial': (p) => `Título parcialmente diferente al de CrossRef (${p}%)`,
     'cr.title-diff': (p, tt) => `El título no coincide con CrossRef — registrado: "${tt}"`,
     'cr.year-diff': (r, c) => `Año incorrecto: la referencia dice ${r} pero CrossRef registra ${c}`,
+    'cr.volume-diff': (r, c) => `Volumen incorrecto: la referencia dice ${r} pero CrossRef registra ${c}`,
     'cr.year-ok': (y) => `Año ${y} confirmado en CrossRef`,
+    'cr.retracted': (f) => f ? `⚠️ ARTÍCULO RETRACTADO (aviso: ${f})` : '⚠️ ARTÍCULO RETRACTADO — verificado en CrossRef',
+    'cr.retraction-link': '🚫 Ver aviso de retractación',
     // Autores
     'cr.author-ok': (a) => `Autor confirmado en CrossRef (${a})`,
     'cr.author-warn': (a) => `Autor diferente: CrossRef registra "${a}"`,
@@ -760,9 +766,11 @@ const LANGS = {
     'results.heading': '📊 Results',
     'btn.export': '⬇ Export report', 'btn.pdf': '🖨 PDF', 'btn.nueva': '← New search',
     'stats.total': 'Total', 'stats.ok': '✅ Valid', 'stats.warn': '⚠️ Suspicious', 'stats.error': '❌ Problem', 'stats.nodoi': '🔗 No DOI',
+    'stats.retracted': '🚫 Retracted',
     'check.ref-ok': 'Reference correct — no inconsistencies detected.',
     'th.n': '#', 'th.estado': 'Status', 'th.ref': 'Reference', 'th.fuentes': 'Sources', 'th.checks': 'Verifications',
     'badge.ok': 'Valid', 'badge.warn': 'Suspicious', 'badge.error': 'Problem', 'badge.nodoi': 'No DOI',
+    'badge.retracted': 'Retracted',
     'gs.link': '🎓 Google Scholar',
     'btn.copy-ref': 'Copy reference',
     'btn.copy': 'Copy',
@@ -779,7 +787,10 @@ const LANGS = {
     'cr.title-partial': (p) => `Partial title match in CrossRef (${p}%)`,
     'cr.title-diff': (p, tt) => `Title mismatch in CrossRef — registered: "${tt}"`,
     'cr.year-diff': (r, c) => `Incorrect year: reference says ${r} but CrossRef records ${c}`,
+    'cr.volume-diff': (r, c) => `Incorrect volume: reference says ${r} but CrossRef records ${c}`,
     'cr.year-ok': (y) => `Year ${y} confirmed in CrossRef`,
+    'cr.retracted': (f) => f ? `⚠️ RETRACTED ARTICLE (notice: ${f})` : '⚠️ RETRACTED ARTICLE — verified in CrossRef',
+    'cr.retraction-link': '🚫 View retraction notice',
     'cr.author-ok': (a) => `Author confirmed in CrossRef (${a})`,
     'cr.author-warn': (a) => `Different author: CrossRef has "${a}"`,
     'ss.author-ok': (a) => `Author confirmed in Semantic Scholar (${a})`,
@@ -1100,7 +1111,7 @@ function parsearRef(texto) {
   const ref = {
     texto_original: textoLimpio,
     texto_formato: tieneFormato ? texto : null,
-    doi: null, anio: null, autores: null, titulo: null
+    doi: null, anio: null, autores: null, titulo: null, volumen: null
   };
   const doiM = textoLimpio.match(/https?:\/\/doi\.org\/([^\s]+)|(?:^|[\s(])doi\.org\/([^\s]+)|(?:^|[\s(])(10\.\d{4,}\/[^\s,]+)/i);
   if (doiM) ref.doi = doiM[0].replace(/https?:\/\/doi\.org\//i,'').replace(/doi\.org\//i,'').replace(/[.,;)\]]+$/,'');
@@ -1112,6 +1123,9 @@ function parsearRef(texto) {
     const titM = rest.match(/^\.?\s*(.+?)\.\s/);
     if (titM) ref.titulo = titM[1].trim();
   }
+  // Volumen de revista: patrón APA "..., 33(2), ..." — coma, número, número entre paréntesis
+  const volM = textoLimpio.match(/,\s*(\d+)\s*\(\d+[a-z]?\)/);
+  if (volM) ref.volumen = volM[1];
   return ref;
 }
 
@@ -1192,16 +1206,45 @@ async function verificarCrossRef(doi) {
     const r = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}?mailto=refcheck@app.io`, { signal: AbortSignal.timeout(8000) });
     if (!r.ok) { const res = { existe: false }; cacheSet(ck, res); return res; }
     const d = await r.json(); const m = d.message;
+    // Retractaciones: CrossRef integra datos de Retraction Watch en 'update-to' (desde 2023)
+    // y a veces en 'relation'. Ninguno de los dos siempre está poblado (depende del editor),
+    // por eso se leen ambos como fuentes complementarias, sin llamada de red adicional.
+    const retInfo = detectarRetraccion(m);
     const res = {
       existe: true, doi: m.DOI,
       titulo: m.title?.[0] ?? null,
       autores: m.author?.map(a => a.family || '').join('; ') ?? null,
       anio: m.issued?.['date-parts']?.[0]?.[0] ?? null,
       revista: m['container-title']?.[0] ?? null,
-      tipo: m.type ?? null
+      tipo: m.type ?? null,
+      volumen: m.volume ?? null,
+      retractado: !!retInfo,
+      retractacionInfo: retInfo
     };
     cacheSet(ck, res); return res;
   } catch { return { existe: null, error: 'timeout' }; }
+}
+
+// Extrae información de retractación de un registro CrossRef sin llamada de red adicional.
+// Revisa 'update-to' (integración Retraction Watch) y 'relation' como respaldo.
+function detectarRetraccion(m) {
+  const updateTo = Array.isArray(m['update-to']) ? m['update-to'] : [];
+  const marcaRetraccion = updateTo.find(u => (u.type || '').toLowerCase().includes('retract'));
+  if (marcaRetraccion) {
+    const fechaParts = marcaRetraccion.updated?.['date-parts']?.[0];
+    return {
+      doi: marcaRetraccion.DOI || null,
+      fecha: fechaParts ? fechaParts.join('-') : null,
+      fuente: marcaRetraccion.source || null
+    };
+  }
+  const relation = m.relation || {};
+  const claveRelacion = Object.keys(relation).find(k => k.toLowerCase().includes('retract'));
+  if (claveRelacion) {
+    const entrada = Array.isArray(relation[claveRelacion]) ? relation[claveRelacion][0] : null;
+    return { doi: entrada?.id || null, fecha: null, fuente: 'relation' };
+  }
+  return null;
 }
 
 
@@ -1391,11 +1434,20 @@ function actualizarProgreso(p, label, sub) {
 // ESTADO
 // ════════════════════════════════════════════════════════════
 function calcularEstado(ref, cr, ss, oa, apa) {
+  // Retractado según CrossRef (integración Retraction Watch) → máxima prioridad
+  if (cr && cr.existe === true && cr.retractado) return 'retracted';
   // DOI no encontrado en CrossRef → error
   if (cr && cr.existe === false) return 'error';
   // Título muy diferente al del DOI → error
   if (cr && cr.existe && cr.titulo && ref.titulo) {
     if (similitud(normalizar(ref.titulo), normalizar(cr.titulo)) < 0.2) return 'error';
+  }
+  // DOI resuelve pero año, volumen o primer autor no coinciden con CrossRef → sospechosa (matiz)
+  if (cr && cr.existe === true) {
+    if (ref.anio && cr.anio && String(ref.anio) !== String(cr.anio)) return 'warn';
+    if (ref.volumen && cr.volumen && String(ref.volumen) !== String(cr.volumen)) return 'warn';
+    const acNuance = compararPrimerAutor(ref.autores, cr.autores);
+    if (acNuance && !acNuance.match) return 'warn';
   }
   const tieneTitle = !!(ref.titulo && ref.titulo.length > 10);
   const crEncontrado = cr?.existe === true;
@@ -1409,11 +1461,11 @@ function calcularEstado(ref, cr, ss, oa, apa) {
   if (similSS !== null && similSS < 0.4 && similOA !== null && similOA < 0.4) return 'warn';
   if (apa.warn.length >= 2) return 'warn';
 
-  // Autores no coinciden en fuente con coincidencia alta → warn
-  const acCR = cr?.existe === true ? compararPrimerAutor(ref.autores, cr.autores) : null;
+  // Autor no coincide en Semantic Scholar/OpenAlex con coincidencia alta → warn
+  // (CrossRef ya se evaluó arriba: si cr.existe y el autor no coincidía, ya se retornó 'warn')
   const asSS = (ss?.encontrado && ss?.similitud > 0.5) ? compararPrimerAutor(ref.autores, ss.autores) : null;
   const aoOA = (oa?.encontrado && oa?.similitud > 0.5) ? compararPrimerAutor(ref.autores, oa.autores) : null;
-  if ((acCR && !acCR.match) || (asSS && !asSS.match) || (aoOA && !aoOA.match)) return 'warn';
+  if ((asSS && !asSS.match) || (aoOA && !aoOA.match)) return 'warn';
 
   // Artículo de revista sin DOI ni enlace → warn
   if (!ref.doi && esArticuloDeRevista(ref, cr)) return 'warn';
@@ -1433,13 +1485,15 @@ function mostrarResultados(resultados) {
   const warn    = resultados.filter(r => r.estado === 'warn').length;
   const errores = resultados.filter(r => r.estado === 'error').length;
   const sinDoi  = resultados.filter(r => r.estado === 'nodoi').length;
+  const retractadas = resultados.filter(r => r.estado === 'retracted').length;
 
   document.getElementById('stats-row').innerHTML = `
     <div class="stat-card stat-total"><div class="stat-num">${total}</div><div class="stat-label">${t('stats.total')}</div></div>
     <div class="stat-card stat-ok"><div class="stat-num">${validas}</div><div class="stat-label">${t('stats.ok')}</div></div>
     <div class="stat-card stat-warn"><div class="stat-num">${warn}</div><div class="stat-label">${t('stats.warn')}</div></div>
     <div class="stat-card stat-error"><div class="stat-num">${errores}</div><div class="stat-label">${t('stats.error')}</div></div>
-    <div class="stat-card stat-nodoi"><div class="stat-num">${sinDoi}</div><div class="stat-label">${t('stats.nodoi')}</div></div>`;
+    <div class="stat-card stat-nodoi"><div class="stat-num">${sinDoi}</div><div class="stat-label">${t('stats.nodoi')}</div></div>
+    ${retractadas > 0 ? `<div class="stat-card stat-retracted"><div class="stat-num">${retractadas}</div><div class="stat-label">${t('stats.retracted')}</div></div>` : ''}`;
 
   const tbody = document.getElementById('results-tbody');
   tbody.innerHTML = '';
@@ -1505,12 +1559,15 @@ function fuentesHtml(r) {
     const st = r.cr ? (r.cr.existe===false ? ' <span style="color:var(--rojo);font-size:10px">✗</span>' : r.cr.existe===true ? ' <span style="color:var(--verde);font-size:10px">✓</span>' : ' <span style="color:var(--texto-dim);font-size:10px">?</span>') : '';
     h += `<a class="doi-link" href="https://doi.org/${r.ref.doi}" target="_blank">${esc(r.ref.doi)}</a>${st}<br>`;
   }
+  if (r.cr?.retractado && r.cr.retractacionInfo?.doi) {
+    h += `<a class="doi-link" style="color:var(--rojo)" href="https://doi.org/${esc(r.cr.retractacionInfo.doi)}" target="_blank">${t('cr.retraction-link')}</a><br>`;
+  }
   h += `<a class="gs-link" href="${googleScholarLink(r.ref)}" target="_blank">${t('gs.link')}</a>`;
   return h;
 }
 
 function badgeEstado(e) {
-  const m = { ok:['s-ok','✅','badge.ok'], warn:['s-warn','⚠️','badge.warn'], error:['s-error','❌','badge.error'], nodoi:['s-nodoi','🔗','badge.nodoi'] };
+  const m = { ok:['s-ok','✅','badge.ok'], warn:['s-warn','⚠️','badge.warn'], error:['s-error','❌','badge.error'], nodoi:['s-nodoi','🔗','badge.nodoi'], retracted:['s-retracted','🚫','badge.retracted'] };
   const [cls, ico, key] = m[e] || m.nodoi;
   return `<span class="badge-status ${cls}">${ico} ${t(key)}</span>`;
 }
@@ -1533,6 +1590,7 @@ function buildChecks(r) {
       addWrn('cr', t('cr.noresp'));
     } else {
       addOk();
+      if (r.cr.retractado) addErr('cr', t('cr.retracted', r.cr.retractacionInfo?.fecha));
       if (r.ref.titulo && r.cr.titulo) {
         const s = similitud(normalizar(r.ref.titulo), normalizar(r.cr.titulo));
         if (s > 0.7) addOk();
@@ -1540,8 +1598,11 @@ function buildChecks(r) {
         else addErr('cr', t('cr.title-diff', pct(s), esc((r.cr.titulo||'').substring(0,55))));
       }
       if (r.ref.anio && r.cr.anio && String(r.ref.anio) !== String(r.cr.anio))
-        addErr('cr', t('cr.year-diff', r.ref.anio, r.cr.anio));
+        addWrn('cr', t('cr.year-diff', r.ref.anio, r.cr.anio));
       else if (r.cr.anio) addOk();
+      if (r.ref.volumen && r.cr.volumen && String(r.ref.volumen) !== String(r.cr.volumen))
+        addWrn('cr', t('cr.volume-diff', r.ref.volumen, r.cr.volumen));
+      else if (r.cr.volumen) addOk();
       const ac = compararPrimerAutor(r.ref.autores, r.cr.autores);
       if (ac) { ac.match ? addOk() : addWrn('cr', t('cr.author-warn', ac.foundFirst)); }
     }
@@ -1601,9 +1662,9 @@ function exportarHTML() {
   const validas = resultados_globales.filter(r=>r.estado==='ok').length;
   const warn    = resultados_globales.filter(r=>r.estado==='warn').length;
   const errores = resultados_globales.filter(r=>r.estado==='error').length;
-  const estadoMap = { ok:`✅ ${t('badge.ok')}`, warn:`⚠️ ${t('badge.warn')}`, error:`❌ ${t('badge.error')}`, nodoi:`🔗 ${t('badge.nodoi')}` };
+  const estadoMap = { ok:`✅ ${t('badge.ok')}`, warn:`⚠️ ${t('badge.warn')}`, error:`❌ ${t('badge.error')}`, nodoi:`🔗 ${t('badge.nodoi')}`, retracted:`🚫 ${t('badge.retracted')}` };
 
-  const stCls = { ok:'st-ok', warn:'st-w', error:'st-e', nodoi:'st-n' };
+  const stCls = { ok:'st-ok', warn:'st-w', error:'st-e', nodoi:'st-n', retracted:'st-r' };
   let rows = '';
   resultados_globales.forEach((r, i) => {
     const checks = buildChecksPlain(r);
@@ -1634,7 +1695,7 @@ function exportarHTML() {
   th { background:#1a1060; color:white; padding:5pt 6pt; text-align:left; font-size:8pt; }
   td { padding:5pt 6pt; border:0.5pt solid #d0d0d0; vertical-align:top; word-break:break-word; line-height:1.4; }
   tr:nth-child(even) td { background:#f7f7fd; }
-  .st-ok{color:#166534;font-weight:bold} .st-w{color:#92400e;font-weight:bold} .st-e{color:#8b1a1a;font-weight:bold} .st-n{color:#555;font-weight:bold}
+  .st-ok{color:#166534;font-weight:bold} .st-w{color:#92400e;font-weight:bold} .st-e{color:#8b1a1a;font-weight:bold} .st-n{color:#555;font-weight:bold} .st-r{color:#fff;background:#7f1d1d;font-weight:bold;padding:1pt 5pt;border-radius:3pt}
   ul.chk { margin:0; padding-left:12pt; list-style:disc; font-size:8pt; }
   ul.chk li { margin-bottom:1pt; line-height:1.35; }
   .doi-s { font-size:7.5pt; color:#1a6391; word-break:break-all; }
@@ -1672,16 +1733,16 @@ function exportarWord() {
   const validas = resultados_globales.filter(r=>r.estado==='ok').length;
   const warn    = resultados_globales.filter(r=>r.estado==='warn').length;
   const errores = resultados_globales.filter(r=>r.estado==='error').length;
-  const estadoMap = { ok:`OK ${t('badge.ok')}`, warn:`[!] ${t('badge.warn')}`, error:`[X] ${t('badge.error')}`, nodoi:`[?] ${t('badge.nodoi')}` };
+  const estadoMap = { ok:`OK ${t('badge.ok')}`, warn:`[!] ${t('badge.warn')}`, error:`[X] ${t('badge.error')}`, nodoi:`[?] ${t('badge.nodoi')}`, retracted:`[RETRACTADO] ${t('badge.retracted')}` };
 
   let rows = '';
   resultados_globales.forEach((r, i) => {
     const checks = buildChecksWord(r);
     const doiTxt = r.ref.doi ? `https://doi.org/${r.ref.doi}${r.cr?.existe===true?' [OK]':r.cr?.existe===false?' [NO ENCONTRADO]':''}` : '—';
-    const colorFondo = r.estado==='ok' ? '#f0fdf4' : r.estado==='error' ? '#fef2f2' : '#fffbeb';
+    const colorFondo = r.estado==='retracted' ? '#fee2e2' : r.estado==='ok' ? '#f0fdf4' : r.estado==='error' ? '#fef2f2' : '#fffbeb';
     rows += `<tr>
       <td style="text-align:center;font-weight:bold;background:${colorFondo}">${i+1}</td>
-      <td style="font-weight:bold;background:${colorFondo};color:${r.estado==='ok'?'#166534':r.estado==='error'?'#991b1b':'#92400e'}">${estadoMap[r.estado]||r.estado}</td>
+      <td style="font-weight:bold;background:${colorFondo};color:${r.estado==='ok'?'#166534':r.estado==='retracted'?'#7f1d1d':r.estado==='error'?'#991b1b':'#92400e'}">${estadoMap[r.estado]||r.estado}</td>
       <td style="background:${colorFondo}">${r.ref.texto_original.replace(/</g,'&lt;')}</td>
       <td style="font-size:8pt;color:#374151;word-break:break-all;background:${colorFondo}">${doiTxt}</td>
       <td style="background:${colorFondo}">${checks}</td>
@@ -1779,7 +1840,7 @@ function exportarWord() {
 
 function exportarExcel() {
   const fecha = new Date().toLocaleDateString(lang === 'es' ? 'es-CR' : 'en-US', { year:'numeric', month:'long', day:'numeric' });
-  const estadoMap = { ok: t('badge.ok'), warn: t('badge.warn'), error: t('badge.error'), nodoi: t('badge.nodoi') };
+  const estadoMap = { ok: t('badge.ok'), warn: t('badge.warn'), error: t('badge.error'), nodoi: t('badge.nodoi'), retracted: t('badge.retracted') };
 
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
@@ -1789,12 +1850,15 @@ function exportarExcel() {
     const problems = [];
     if (r.cr?.existe === false) problems.push(t('cr.notfound'));
     else if (r.cr?.existe) {
+      if (r.cr.retractado) problems.push(t('cr.retracted', r.cr.retractacionInfo?.fecha));
       if (r.ref.titulo && r.cr.titulo) {
         const s = similitud(normalizar(r.ref.titulo), normalizar(r.cr.titulo));
         if (s <= 0.7) problems.push(t('cr.title-partial', pct(s)));
       }
       if (r.ref.anio && r.cr.anio && String(r.ref.anio) !== String(r.cr.anio))
         problems.push(t('cr.year-diff', r.ref.anio, r.cr.anio));
+      if (r.ref.volumen && r.cr.volumen && String(r.ref.volumen) !== String(r.cr.volumen))
+        problems.push(t('cr.volume-diff', r.ref.volumen, r.cr.volumen));
       const ac = compararPrimerAutor(r.ref.autores, r.cr.autores);
       if (ac && !ac.match) problems.push(t('cr.author-warn', ac.foundFirst));
     }
@@ -1877,12 +1941,15 @@ function buildChecksWord(r) {
   const problems = [];
   if (r.cr?.existe === false) problems.push(`❌ ${t('cr.notfound')}`);
   else if (r.cr?.existe) {
+    if (r.cr.retractado) problems.push(`🚫 ${t('cr.retracted', r.cr.retractacionInfo?.fecha)}`);
     if (r.ref.titulo && r.cr.titulo) {
       const s = similitud(normalizar(r.ref.titulo), normalizar(r.cr.titulo));
       if (s <= 0.7) problems.push(`⚠️ ${t('cr.title-partial', pct(s))}`);
     }
     if (r.ref.anio && r.cr.anio && String(r.ref.anio) !== String(r.cr.anio))
-      problems.push(`❌ ${t('cr.year-diff', r.ref.anio, r.cr.anio)}`);
+      problems.push(`⚠️ ${t('cr.year-diff', r.ref.anio, r.cr.anio)}`);
+    if (r.ref.volumen && r.cr.volumen && String(r.ref.volumen) !== String(r.cr.volumen))
+      problems.push(`⚠️ ${t('cr.volume-diff', r.ref.volumen, r.cr.volumen)}`);
     const ac = compararPrimerAutor(r.ref.autores, r.cr.autores);
     if (ac && !ac.match) problems.push(`⚠️ ${t('cr.author-warn', ac.foundFirst)}`);
   }
@@ -1900,10 +1967,15 @@ function buildChecksPlain(r) {
     items.push(`❌ CrossRef: ${t('cr.notfound')}`);
   } else if (r.cr?.existe) {
     items.push(`✅ CrossRef: ${t('cr.ok')}`);
+    if (r.cr.retractado) items.push(`🚫 ${t('cr.retracted', r.cr.retractacionInfo?.fecha)}`);
     if (r.ref.titulo && r.cr.titulo) {
       const s = similitud(normalizar(r.ref.titulo),normalizar(r.cr.titulo));
       items.push(s>0.7?`✅ ${t('cr.title-ok', pct(s))}`:`⚠️ ${t('cr.title-diff', pct(s), (r.cr.titulo||'').substring(0,50))}`);
     }
+    if (r.ref.anio && r.cr.anio && String(r.ref.anio) !== String(r.cr.anio))
+      items.push(`⚠️ ${t('cr.year-diff', r.ref.anio, r.cr.anio)}`);
+    if (r.ref.volumen && r.cr.volumen && String(r.ref.volumen) !== String(r.cr.volumen))
+      items.push(`⚠️ ${t('cr.volume-diff', r.ref.volumen, r.cr.volumen)}`);
     const ac = compararPrimerAutor(r.ref.autores, r.cr.autores);
     if (ac) items.push(ac.match ? `✅ ${t('cr.author-ok', ac.refFirst)}` : `⚠️ ${t('cr.author-warn', ac.foundFirst)}`);
   }
@@ -2122,7 +2194,7 @@ function applyManualLang() {
   <table class="mtable">
     <thead><tr><th><span data-m-es>Fuente</span><span data-m-en style="display:none">Source</span></th><th><span data-m-es>¿Qué verifica?</span><span data-m-en style="display:none">What does it check?</span></th></tr></thead>
     <tbody>
-      <tr><td style="color:var(--accent);font-weight:600">CrossRef</td><td><span data-m-es>Valida el DOI en tiempo real. Compara título, autor y año.</span><span data-m-en style="display:none">Validates the DOI in real time. Compares title, author, and year.</span></td></tr>
+      <tr><td style="color:var(--accent);font-weight:600">CrossRef</td><td><span data-m-es>Valida el DOI en tiempo real. Compara título, autor, año y volumen; detecta retractaciones reportadas a CrossRef (integración con Retraction Watch).</span><span data-m-en style="display:none">Validates the DOI in real time. Compares title, author, year, and volume; detects retractions reported to CrossRef (Retraction Watch integration).</span></td></tr>
       <tr><td style="color:var(--accent2);font-weight:600">Semantic Scholar</td><td><span data-m-es>Busca el trabajo por título. Compara similitud de título, autor y año.</span><span data-m-en style="display:none">Searches the work by title. Compares title, author, and year similarity.</span></td></tr>
       <tr><td style="color:var(--verde);font-weight:600">OpenAlex</td><td><span data-m-es>Base de datos académica abierta. Busca por título y autor.</span><span data-m-en style="display:none">Open academic database. Searches by title and author.</span></td></tr>
       <tr><td style="color:#a78bfa;font-weight:600">APA 7</td><td><span data-m-es>Revisa el formato: año entre paréntesis, punto después del año, formato de autores, DOI en artículos de revista.</span><span data-m-en style="display:none">Reviews format: year in parentheses, period after year, author format, DOI in journal articles.</span></td></tr>
@@ -2134,28 +2206,33 @@ function applyManualLang() {
 <section class="mblock" id="ms5">
   <div class="mnum">05</div>
   <h2><span data-m-es>Interpretar los resultados</span><span data-m-en style="display:none">Interpreting results</span></h2>
-  <p><span data-m-es>Cada referencia recibe uno de cuatro estados:</span><span data-m-en style="display:none">Each reference receives one of four statuses:</span></p>
+  <p><span data-m-es>Cada referencia recibe uno de cinco estados:</span><span data-m-en style="display:none">Each reference receives one of five statuses:</span></p>
   <div class="mbadge-row">
     <div class="mbadge mb-ok">✅ <span data-m-es>Válida</span><span data-m-en style="display:none">Valid</span></div>
     <div class="mbadge mb-w">⚠️ <span data-m-es>Sospechosa</span><span data-m-en style="display:none">Suspicious</span></div>
     <div class="mbadge mb-e">❌ <span data-m-es>Problema</span><span data-m-en style="display:none">Problem</span></div>
     <div class="mbadge mb-n">🔗 <span data-m-es>Sin DOI</span><span data-m-en style="display:none">No DOI</span></div>
+    <div class="mbadge" style="background:rgba(248,113,113,0.18);color:#f87171;border:1px solid rgba(248,113,113,0.4)">🚫 <span data-m-es>Retractado</span><span data-m-en style="display:none">Retracted</span></div>
   </div>
   <div class="mstep"><div class="mstep-n" style="background:var(--verde)">✅</div><div>
     <h3><span data-m-es>Válida</span><span data-m-en style="display:none">Valid</span></h3>
-    <p><span data-m-es>Encontrada y verificada sin inconsistencias. Muestra: <em>"Referencia correcta — sin inconsistencias detectadas."</em></span><span data-m-en style="display:none">Found and verified without inconsistencies. Shows: <em>"Reference correct — no inconsistencies detected."</em></span></p>
+    <p><span data-m-es>Encontrada y verificada sin inconsistencias: el DOI resuelve en CrossRef y el título, autor, año y volumen coinciden. Muestra: <em>"Referencia correcta — sin inconsistencias detectadas."</em></span><span data-m-en style="display:none">Found and verified without inconsistencies: the DOI resolves in CrossRef and title, author, year, and volume match. Shows: <em>"Reference correct — no inconsistencies detected."</em></span></p>
   </div></div>
   <div class="mstep"><div class="mstep-n" style="background:var(--amarillo)">⚠️</div><div>
     <h3><span data-m-es>Sospechosa</span><span data-m-en style="display:none">Suspicious</span></h3>
-    <p><span data-m-es>Inconsistencias detectadas: autor no coincide, título difiere, artículo sin DOI, o año incorrecto. Se muestran detalles.</span><span data-m-en style="display:none">Inconsistencies detected: author mismatch, title differs, article without DOI, or wrong year. Details are shown.</span></p>
+    <p><span data-m-es>El DOI existe y resuelve correctamente, pero algo no coincide con lo que registra CrossRef: autor no coincide, título difiere parcialmente, año incorrecto, volumen incorrecto, o artículo de revista sin DOI. Se muestra el detalle exacto de la discrepancia — no significa que la referencia sea falsa, sino que amerita revisión manual.</span><span data-m-en style="display:none">The DOI exists and resolves correctly, but something does not match what CrossRef records: author mismatch, partial title match, wrong year, wrong volume, or a journal article without a DOI. The exact discrepancy is shown — it does not mean the reference is false, only that it needs manual review.</span></p>
   </div></div>
   <div class="mstep"><div class="mstep-n" style="background:var(--rojo)">❌</div><div>
     <h3><span data-m-es>Problema</span><span data-m-en style="display:none">Problem</span></h3>
-    <p><span data-m-es>DOI no existe en CrossRef o título no encontrado. Alta probabilidad de alucinación de IA.</span><span data-m-en style="display:none">DOI does not exist in CrossRef or title not found. High probability of AI hallucination.</span></p>
+    <p><span data-m-es>DOI no existe en CrossRef, título no encontrado en ninguna fuente, o el título registrado en CrossRef es radicalmente distinto al citado. Alta probabilidad de alucinación de IA.</span><span data-m-en style="display:none">DOI does not exist in CrossRef, title not found in any source, or the title CrossRef records is radically different from the one cited. High probability of AI hallucination.</span></p>
   </div></div>
   <div class="mstep"><div class="mstep-n" style="background:var(--texto-dim)">🔗</div><div>
     <h3><span data-m-es>Sin DOI</span><span data-m-en style="display:none">No DOI</span></h3>
     <p><span data-m-es>No se pudo verificar por DOI. En artículos de revista se marca sospechoso; en libros o tesis es normal.</span><span data-m-en style="display:none">Could not verify via DOI. For journal articles flagged suspicious; for books or theses it is normal.</span></p>
+  </div></div>
+  <div class="mstep"><div class="mstep-n" style="background:#7f1d1d">🚫</div><div>
+    <h3><span data-m-es>Retractado</span><span data-m-en style="display:none">Retracted</span></h3>
+    <p><span data-m-es>CrossRef reporta que el artículo fue formalmente retractado (integración con Retraction Watch). Este estado tiene prioridad sobre cualquier otra coincidencia — se muestra la fecha del aviso cuando está disponible y un enlace directo a la notificación de retractación. La cobertura depende de que la editorial haya reportado el dato a CrossRef; no todas las retractaciones están registradas.</span><span data-m-en style="display:none">CrossRef reports the article was formally retracted (Retraction Watch integration). This status overrides any other match — the notice date is shown when available, along with a direct link to the retraction notice. Coverage depends on the publisher having reported the retraction to CrossRef; not all retractions are recorded.</span></p>
   </div></div>
 </section>
 <section class="mblock" id="ms6">

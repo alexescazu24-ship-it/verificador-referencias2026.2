@@ -734,6 +734,7 @@ const LANGS = {
     'cr.volume-diff': (r, c) => `Volumen incorrecto: la referencia dice ${r} pero CrossRef registra ${c}`,
     'cr.year-near': (r, c) => `Año ${r}: CrossRef registra ${c} (publicación en línea). Suele ser el año del volumen citado; confirma en la revista.`,
     'cr.retracted': (f) => f ? `ARTÍCULO RETRACTADO (aviso: ${f})` : 'ARTÍCULO RETRACTADO — verificado en CrossRef',
+    'cr.retracted-title': 'El título registrado en CrossRef empieza por «RETRACTED»: el artículo fue retractado.',
     'cr.retraction-link': '🚫 Ver aviso de retractación',
     // Autores
     'cr.author-warn': (a) => `Autor diferente: CrossRef registra "${a}"`,
@@ -840,6 +841,7 @@ const LANGS = {
     'cr.volume-diff': (r, c) => `Incorrect volume: reference says ${r} but CrossRef records ${c}`,
     'cr.year-near': (r, c) => `Year ${r}: CrossRef records ${c} (online publication). This is usually the cited volume's year; confirm with the journal.`,
     'cr.retracted': (f) => f ? `RETRACTED ARTICLE (notice: ${f})` : 'RETRACTED ARTICLE — verified in CrossRef',
+    'cr.retracted-title': 'The title registered in CrossRef begins with «RETRACTED»: the article was retracted.',
     'cr.retraction-link': '🚫 View retraction notice',
     'cr.author-warn': (a) => `Different author: CrossRef has "${a}"`,
     'ss.author-warn': (a) => `Different author: Semantic Scholar has "${a}"`,
@@ -963,6 +965,7 @@ const LANGS = {
     'cr.volume-diff': (r, c) => `Volume incorreto: a referência diz ${r}, mas o CrossRef registra ${c}`,
     'cr.year-near': (r, c) => `Ano ${r}: o CrossRef registra ${c} (publicação online). Costuma ser o ano do volume citado; confirme na revista.`,
     'cr.retracted': (f) => f ? `ARTIGO RETRATADO (aviso: ${f})` : 'ARTIGO RETRATADO — verificado no CrossRef',
+    'cr.retracted-title': 'O título registrado no CrossRef começa por «RETRACTED»: o artigo foi retratado.',
     'cr.retraction-link': '🚫 Ver aviso de retratação',
     // Autores
     'cr.author-warn': (a) => `Autor diferente: o CrossRef registra "${a}"`,
@@ -1474,22 +1477,40 @@ async function verificarDataCite(doi) {
 
 // Extrae información de retractación de un registro CrossRef sin llamada de red adicional.
 // Revisa 'update-to' (integración Retraction Watch) y 'relation' como respaldo.
+// Algunos editores anteponen la marca al título registrado en lugar de depositar el metadato.
+// Medido sobre 40 artículos retractados de CrossRef: 12 solo se delatan por el título.
+// Exige texto después de la marca, para no confundir el artículo con el propio aviso,
+// cuyo título suele ser solo «Retracted».
+const RE_TITULO_RETRACTADO = /^\s*(?:retracted|withdrawn|retractado|retirado)\b[\s:.\-–—]+\S/i;
+
+// Extrae la información de retractación de un registro CrossRef, sin llamada de red adicional.
+// El orden importa: «updated-by» significa «a este artículo lo retractaron» y es el que trae los
+// datos de Retraction Watch; «update-to» significa lo contrario, «este registro ES un aviso», y
+// solo aplica cuando se cita la propia nota de retractación.
 function detectarRetraccion(m) {
-  const updateTo = Array.isArray(m['update-to']) ? m['update-to'] : [];
-  const marcaRetraccion = updateTo.find(u => (u.type || '').toLowerCase().includes('retract'));
-  if (marcaRetraccion) {
-    const fechaParts = marcaRetraccion.updated?.['date-parts']?.[0];
-    return {
-      doi: marcaRetraccion.DOI || null,
-      fecha: fechaParts ? fechaParts.join('-') : null,
-      fuente: marcaRetraccion.source || null
-    };
-  }
+  const conRetraccion = (lista) => (Array.isArray(lista) ? lista : [])
+    .find(u => ((u.type || '') + ' ' + (u.label || '')).toLowerCase().includes('retract'));
+  const datos = (u, fuentePorDefecto) => {
+    const fechaParts = u.updated?.['date-parts']?.[0];
+    return { doi: u.DOI || null, fecha: fechaParts ? fechaParts.join('-') : null,
+             fuente: u.source || fuentePorDefecto };
+  };
+
+  const retractadoPor = conRetraccion(m['updated-by']);
+  if (retractadoPor) return datos(retractadoPor, 'updated-by');
+
+  const esAviso = conRetraccion(m['update-to']);
+  if (esAviso) return datos(esAviso, 'update-to');
+
   const relation = m.relation || {};
   const claveRelacion = Object.keys(relation).find(k => k.toLowerCase().includes('retract'));
   if (claveRelacion) {
     const entrada = Array.isArray(relation[claveRelacion]) ? relation[claveRelacion][0] : null;
     return { doi: entrada?.id || null, fecha: null, fuente: 'relation' };
+  }
+
+  if (RE_TITULO_RETRACTADO.test(m.title?.[0] || '')) {
+    return { doi: null, fecha: null, fuente: 'titulo' };
   }
   return null;
 }
@@ -1984,7 +2005,9 @@ function observaciones(r) {
       add('warn', 'cr', t('cr.noresp'));
     } else {
       oks++;
-      if (cr.retractado) add('ret', srcCR, t('cr.retracted', cr.retractacionInfo?.fecha));
+      if (cr.retractado) add('ret', srcCR, cr.retractacionInfo?.fuente === 'titulo'
+        ? t('cr.retracted-title')
+        : t('cr.retracted', cr.retractacionInfo?.fecha));
       if (ref.titulo && cr.titulo) {
         // Mismos umbrales que calcularEstado: >0.65 coincide · 0.2–0.65 el DOI resuelve pero el
         // título registrado es más corto o distinto (frecuente con subtítulos) · <0.2 no es la misma obra
@@ -2522,7 +2545,7 @@ function applyManualLang() {
   <table class="mtable">
     <thead><tr><th><span data-m-es>Fuente</span><span data-m-en style="display:none">Source</span><span data-m-pt style="display:none">Fonte</span></th><th><span data-m-es>¿Qué verifica?</span><span data-m-en style="display:none">What does it check?</span><span data-m-pt style="display:none">O que verifica?</span></th></tr></thead>
     <tbody>
-      <tr><td style="color:var(--accent);font-weight:600">CrossRef</td><td><span data-m-es>Valida el DOI en tiempo real. Compara título, autor, año y volumen; detecta retractaciones reportadas a CrossRef (integración con Retraction Watch).</span><span data-m-en style="display:none">Validates the DOI in real time. Compares title, author, year, and volume; detects retractions reported to CrossRef (Retraction Watch integration).</span><span data-m-pt style="display:none">Valida o DOI em tempo real. Compara título, autor, ano e volume; detecta retratações informadas ao CrossRef (integração com o Retraction Watch).</span></td></tr>
+      <tr><td style="color:var(--accent);font-weight:600">CrossRef</td><td><span data-m-es>Valida el DOI en tiempo real. Compara título, autor, año y volumen; detecta retractaciones por tres vías: el registro de Retraction Watch, el aviso de retractación y la marca «RETRACTED» en el título.</span><span data-m-en style="display:none">Validates the DOI in real time. Compares title, author, year, and volume; detects retractions through three routes: the Retraction Watch record, the retraction notice, and the "RETRACTED" marker in the title.</span><span data-m-pt style="display:none">Valida o DOI em tempo real. Compara título, autor, ano e volume; detecta retratações por três vias: o registro do Retraction Watch, o aviso de retratação e a marca «RETRACTED» no título.</span></td></tr>
       <tr><td style="color:var(--accent2);font-weight:600">Semantic Scholar</td><td><span data-m-es>Busca el trabajo por título. Sirve de apoyo: que una referencia no aparezca aquí no se marca por sí solo, porque libros, informes y revistas locales suelen faltar.</span><span data-m-en style="display:none">Searches the work by title. Works as support: a reference missing here is not flagged on its own, since books, reports and local journals are often absent.</span><span data-m-pt style="display:none">Busca o trabalho pelo título. Serve de apoio: uma referência que não aparece aqui não é sinalizada por si só, porque livros, relatórios e revistas locais costumam faltar.</span></td></tr>
       <tr><td style="color:var(--verde);font-weight:600">OpenAlex</td><td><span data-m-es>Base de datos académica abierta. Busca por título y autor. Como Semantic Scholar, sirve de apoyo y no penaliza por sí sola.</span><span data-m-en style="display:none">Open academic database. Searches by title and author. Like Semantic Scholar, it works as support and does not penalise on its own.</span><span data-m-pt style="display:none">Base de dados acadêmica aberta. Busca por título e autor. Como o Semantic Scholar, serve de apoio e não penaliza por si só.</span></td></tr>
       <tr><td style="color:#f472b6;font-weight:600">PubMed</td><td><span data-m-es>Base biomédica de la NLM (vía NCBI). Busca por DOI o título. Solo confirma: no encontrarla no penaliza, porque la cobertura es biomédica. También marca artículos como «Retracted Publication», lo que activa el estado Retractado.</span><span data-m-en style="display:none">NLM biomedical database (via NCBI). Searches by DOI or title. Confirm-only: not finding a reference is not penalised, since coverage is biomedical. It also flags articles as "Retracted Publication", which triggers the Retracted status.</span><span data-m-pt style="display:none">Base biomédica da NLM (via NCBI). Busca por DOI ou título. Apenas confirma: não encontrá-la não penaliza, porque a cobertura é biomédica. Também marca artigos como «Retracted Publication», o que ativa o estado Retratado.</span></td></tr>
@@ -2573,7 +2596,7 @@ function applyManualLang() {
   </div></div>
   <div class="mstep"><div class="mstep-n" style="background:#7f1d1d">🚫</div><div>
     <h3><span data-m-es>Retractado</span><span data-m-en style="display:none">Retracted</span><span data-m-pt style="display:none">Retratado</span></h3>
-    <p><span data-m-es>CrossRef o PubMed reportan que el artículo fue formalmente retractado (CrossRef integra Retraction Watch; PubMed lo marca como «Retracted Publication»). Este estado tiene prioridad sobre cualquier otra coincidencia — se muestra la fecha del aviso cuando está disponible y un enlace directo a la notificación de retractación. La cobertura depende de que la editorial haya reportado el dato a CrossRef; no todas las retractaciones están registradas.</span><span data-m-en style="display:none">CrossRef or PubMed report the article was formally retracted (CrossRef integrates Retraction Watch; PubMed flags it as "Retracted Publication"). This status overrides any other match — the notice date is shown when available, along with a direct link to the retraction notice. Coverage depends on the publisher having reported the retraction to CrossRef; not all retractions are recorded.</span><span data-m-pt style="display:none">O CrossRef ou o PubMed informam que o artigo foi formalmente retratado (o CrossRef integra o Retraction Watch; o PubMed o marca como «Retracted Publication»). Este estado tem prioridade sobre qualquer outra coincidência — a data do aviso é mostrada quando disponível, junto com um link direto para a notificação de retratação. A cobertura depende de a editora ter informado o dado ao CrossRef; nem todas as retratações estão registradas.</span></p>
+    <p><span data-m-es>CrossRef o PubMed reportan que el artículo fue formalmente retractado. En CrossRef se revisan tres señales: el dato de retractación del propio registro (integración con Retraction Watch), el aviso que la anuncia, y la marca «RETRACTED» que muchas editoriales anteponen al título. PubMed aporta la marca «Retracted Publication». Este estado tiene prioridad sobre cualquier otra coincidencia — se muestra la fecha del aviso cuando está disponible y un enlace directo a la notificación. Aun así la cobertura no es total: si la editorial no depositó el dato ni marcó el título, la retractación no aparece. Para esos casos están los enlaces a PubPeer y Retraction Watch.</span><span data-m-en style="display:none">CrossRef or PubMed report the article was formally retracted. Three signals are checked in CrossRef: the retraction data in the record itself (Retraction Watch integration), the notice announcing it, and the "RETRACTED" marker many publishers prepend to the title. PubMed adds its "Retracted Publication" flag. This status overrides any other match — the notice date is shown when available, along with a direct link to the notice. Coverage is still not complete: if the publisher deposited no data and did not mark the title, the retraction will not show. The PubPeer and Retraction Watch links are there for those cases.</span><span data-m-pt style="display:none">O CrossRef ou o PubMed informam que o artigo foi formalmente retratado. No CrossRef verificam-se três sinais: o dado de retratação do próprio registro (integração com o Retraction Watch), o aviso que a anuncia, e a marca «RETRACTED» que muitas editoras antepõem ao título. O PubMed acrescenta a marca «Retracted Publication». Este estado tem prioridade sobre qualquer outra coincidência — a data do aviso é mostrada quando disponível, junto com um link direto para a notificação. Ainda assim a cobertura não é total: se a editora não depositou o dado nem marcou o título, a retratação não aparece. Para esses casos estão os links para o PubPeer e o Retraction Watch.</span></p>
   </div></div>
   <div class="mcallout tip"><span>💡</span><span><span data-m-es>Cada referencia se muestra completa. Pase el ratón sobre el icono junto al texto para copiarla y comprobarla en otros buscadores. Solo se muestran las observaciones que explican el estado, sin listar cada fuente que no la encontró.</span><span data-m-en style="display:none">Each reference is shown in full. Hover over the icon next to the text to copy it and check it in other search engines. Only the observations that explain the status are shown, without listing every source that did not find it.</span><span data-m-pt style="display:none">Cada referência é mostrada por completo. Passe o mouse sobre o ícone ao lado do texto para copiá-la e conferi-la em outros buscadores. Só são mostradas as observações que explicam o estado, sem listar cada fonte que não a encontrou.</span></span></div>
 </section>

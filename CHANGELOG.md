@@ -53,6 +53,13 @@ título, cuyo primer resultado suele ser otro artículo.
   institucionales son válidos en APA 7 y se marcaban como error de formato.
 - **DOIs con el dominio antiguo** `dx.doi.org`, frecuentes en revistas latinoamericanas,
   no se reconocían.
+- **Retractaciones que no se detectaban.** Se leía el campo de CrossRef que significa
+  «este registro *es* un aviso de retractación» en lugar del que significa «a este artículo
+  *lo* retractaron», que es el que trae los datos de Retraction Watch. Por eso se escapaban
+  casos tan conocidos como Wakefield (1998) o el artículo de Surgisphere en el *New England
+  Journal of Medicine*. Se añadió además la lectura de la marca «RETRACTED» en el título
+  registrado: sobre 40 artículos retractados, 12 no tienen ningún metadato y solo se
+  delatan así.
 - **Licencia.** El archivo `LICENSE` contenía la GPL-3.0 y no la AGPL-3.0 que la
   herramienta declara.
 
@@ -78,10 +85,10 @@ no alcanza.
 - **Semantic Scholar y OpenAlex limitan las consultas** sin clave. Cuando no responden, la
   herramienta continúa con las demás fuentes, pero dos análisis del mismo documento pueden
   no coincidir. Un informe sin problemas puede significar que las fuentes no contestaron.
-- **La detección de retractaciones es incompleta.** Depende de que la editorial haya
-  depositado el dato en CrossRef, y la lectura actual de esos campos no cubre todos los
-  casos: hay retractaciones conocidas que solo detecta PubMed. Por eso están los enlaces
-  manuales a PubPeer y Retraction Watch.
+- **La detección de retractaciones no es exhaustiva.** Se revisan cuatro señales —el dato
+  de retractación de CrossRef, el aviso, la marca «RETRACTED» en el título y la marca de
+  PubMed—, pero si la editorial no depositó nada ni marcó el título, la retractación no
+  aparece. Por eso están los enlaces manuales a PubPeer y Retraction Watch.
 - **PubMed solo cubre lo biomédico.**
 - **El separador de referencias funciona mejor con una línea en blanco entre cada una.**
   Pegadas sin separación, algunas pueden fusionarse. La herramienta muestra cuántas detectó

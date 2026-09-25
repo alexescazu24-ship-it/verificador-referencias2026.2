@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+title: "Bibliochecker: verificador de referencias bibliográficas APA 7"
+message: "Si usás esta herramienta en un trabajo publicado, por favor citala así."
+type: software
+authors:
+  - family-names: "Chinchilla Serrano"
+    given-names: "Alexander"
+    email: fchinchillas@uned.ac.cr
+    affiliation: "Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED), Costa Rica"
+    country: CR
+abstract: >-
+  Herramienta web de código abierto que verifica referencias bibliográficas en formato
+  APA 7 para detectar alucinaciones de inteligencia artificial. Contrasta cada referencia
+  contra CrossRef, DataCite, Semantic Scholar, OpenAlex y PubMed, señala inconsistencias
+  de autor, año, volumen y título, y marca los artículos retractados. Funciona
+  íntegramente en el navegador, sin cuentas y sin almacenar el texto del usuario.
+  Interfaz y manual en español, inglés y portugués.
+keywords:
+  - referencias bibliográficas
+  - APA 7
+  - alucinaciones de IA
+  - integridad científica
+  - retractaciones
+  - CrossRef
+  - edición científica
+version: "47"
+date-released: "2026-09-24"
+license: AGPL-3.0-or-later
+repository-code: "https://github.com/alexescazu24-ship-it/verificador-referencias2026.2"
+url: "https://alexescazu24-ship-it.github.io/verificador-referencias2026.2/"

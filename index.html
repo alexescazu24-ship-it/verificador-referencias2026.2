@@ -5,10 +5,23 @@
   Copyright (C) 2026  Alexander Chinchilla Serrano
 
   This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  ...
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+  El contenido editorial (textos de interfaz, manual y documentación) se publica
+  bajo Creative Commons Atribución 4.0 Internacional (CC BY 4.0).
+  Ver LICENSE-CONTENT.md en el repositorio.
+
+  SPDX-FileCopyrightText: 2026 Alexander Chinchilla Serrano
   SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <html lang="es" data-theme="oscuro">
@@ -656,13 +669,13 @@ body { font-family: var(--font-body); }
   <div class="footer-credit" id="footer-credit"></div>
   <div class="footer-cc">
      <a class="cc-badge" href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">
-    <span class="cc-text"><strong>Código:</strong> AGPL-3.0-or-later</span>
+    <span class="cc-text"><strong><span data-i18n="footer.badge-code"></span></strong> AGPL-3.0-or-later</span>
   </a>
   <a class="cc-badge" href="https://creativecommons.org/licenses/by/4.0/" target="_blank">
-    <span class="cc-text"><strong>Contenido:</strong> CC BY 4.0</span>
+    <span class="cc-text"><strong><span data-i18n="footer.badge-content"></span></strong> CC BY 4.0</span>
   </a>
   <a class="cc-badge" href="https://github.com/alexescazu24-ship-it/verificador-referencias2026.2/blob/main/index.html" target="_blank">
-    <span class="cc-text">💻 Código fuente</span>
+    <span class="cc-text" data-i18n="footer.badge-source"></span>
   </a>
   </div>
 </footer>
@@ -707,6 +720,7 @@ const LANGS = {
     'btn.copy': 'Copiar',
     'btn.copied': '✓ Copiado',
     'footer.note': '<strong>Notas metodológicas:</strong> CrossRef verifica DOIs en tiempo real · Semantic Scholar, OpenAlex y PubMed (biomédica) buscan por título y autor · DataCite verifica DOIs de datasets, tesis y repositorios que CrossRef no registra · Google Scholar es verificación manual · La validación APA 7 opera sobre texto plano · Estado <em>Sospechosa</em> = inconsistencia que requiere revisión, no necesariamente alucinación.',
+    'footer.badge-code': 'Código:', 'footer.badge-content': 'Contenido:', 'footer.badge-source': '💻 Código fuente',
     'footer.name': 'Bibliochecker', 'footer.by': 'Desarrollado por Alexander Chinchilla Serrano / email: fchinchillas@uned.ac.cr', 'footer.inst': 'Vicerrectoría de Investigación · Universidad Estatal a Distancia (UNED)', 'footer.loc': 'San José, Costa Rica · 2026', 'footer.cc-label': 'Licencia',
     'about.title': 'Sobre Bibliochecker',
     'about.body': '<p>El verificador de referencias bibliográficas <strong>BiblioChecker</strong> surge de la experiencia editorial en la revista <strong>UNED Research Journal (URJ)</strong>, adscrita a la Vicerrectoría de Investigación de la Universidad Estatal a Distancia de Costa Rica (UNED) donde la investigación se organiza como un sistema en red bajo un principio claro desde su origen: el mayor rigor académico posible, al servicio de la democratización del conocimiento.</p><p>La herramienta responde a una preocupación cada vez más frecuente en la práctica editorial: la aparición de referencias bibliográficas generadas con apoyo de Inteligencia Artificial que resultan perfectamente creíbles —autores reales, revistas reconocidas, títulos idóneos— pero que, al revisarlas, no existen o mezclan datos de publicaciones distintas. Verificar esto manualmente, referencia por referencia, es un proceso lento y propenso a errores, y omitirlo compromete la integridad de lo que la revista publica.</p><p>Por ello, se desarrolló esta herramienta bajo dirección e instrucción editorial, codificada con la herramienta <strong>Claude Code</strong> como apoyo técnico a un criterio definido por experiencia humana. Su función es contrastar las referencias contra fuentes reales (CrossRef, bases académicas) para señalar posibles inconsistencias o alucinaciones, y verificar que el formato cumpla con las normas <strong>APA 7.ª edición</strong>, no para emitir un dictamen definitivo: el resultado es una guía de apoyo a la revisión, y la verificación final de cada referencia sigue siendo responsabilidad del profesional editorial.</p><p>Esta herramienta es de acceso abierto y código abierto, disponible para que cualquier persona pueda revisarla, usarla y adaptarla a sus propias necesidades.</p>',
@@ -813,6 +827,7 @@ const LANGS = {
     'btn.copy': 'Copy',
     'btn.copied': '✓ Copied',
     'footer.note': '<strong>Methodological notes:</strong> CrossRef verifies DOIs in real time · Semantic Scholar, OpenAlex and PubMed (biomedical) search by title and author · DataCite verifies DOIs of datasets, theses and repositories that CrossRef does not register · Google Scholar is manual verification · APA 7 validation operates on plain text · Status <em>Suspicious</em> = inconsistency requiring review, not necessarily a hallucination.',
+    'footer.badge-code': 'Code:', 'footer.badge-content': 'Content:', 'footer.badge-source': '💻 Source code',
     'footer.name': 'Bibliochecker', 'footer.by': 'Developed by Alexander Chinchilla Serrano / email: fchinchillas@uned.ac.cr', 'footer.inst': 'Vice-Rectory for Research · Universidad Estatal a Distancia (UNED)', 'footer.loc': 'San José, Costa Rica · 2026', 'footer.cc-label': 'License',
     'about.title': 'About Bibliochecker',
     'about.body': '<p>The bibliographic reference verifier <strong>BiblioChecker</strong> emerged from editorial experience at <strong>UNED Research Journal (URJ)</strong>, a publication affiliated with the Vice-Rectory for Research (Vicerrectoría de Investigación) of the Distance State University of Costa Rica (Universidad Estatal a Distancia, UNED), where research is organized as a networked system under a clear founding principle: the highest possible academic rigor, in service of the democratization of knowledge.</p><p>The tool responds to a growing concern in editorial practice: the appearance of AI-generated bibliographic references that look perfectly credible —real authors, recognized journals, fitting titles— but which, upon verification, turn out not to exist or mix data from different publications. Checking this manually, reference by reference, is a slow and error-prone process, and overlooking it compromises the integrity of what the journal publishes.</p><p>For this reason, this tool was developed under editorial direction and instruction, coded with <strong>Claude Code</strong> as technical support for a judgment defined by human expertise. Its function is to cross-check references against real sources (CrossRef, academic databases) to flag possible inconsistencies or hallucinations, and to verify that formatting complies with <strong>APA 7th edition</strong> standards, not to issue a final verdict: the result is a guidance tool to support review, and the final verification of each reference remains the responsibility of the editorial professional.</p><p>This tool is open access and open source, available for anyone to review, use, and adapt to their own needs.</p>',
@@ -934,6 +949,7 @@ const LANGS = {
     'btn.copy': 'Copiar',
     'btn.copied': '✓ Copiado',
     'footer.note': '<strong>Notas metodológicas:</strong> o CrossRef verifica DOIs em tempo real · Semantic Scholar, OpenAlex e PubMed (biomédica) buscam por título e autor · o DataCite verifica DOIs de datasets, teses e repositórios que o CrossRef não registra · o Google Scholar é verificação manual · a validação APA 7 opera sobre texto simples · Estado <em>Suspeita</em> = inconsistência que requer revisão, não necessariamente alucinação.',
+    'footer.badge-code': 'Código:', 'footer.badge-content': 'Conteúdo:', 'footer.badge-source': '💻 Código-fonte',
     'footer.name': 'Bibliochecker', 'footer.by': 'Desenvolvido por Alexander Chinchilla Serrano / email: fchinchillas@uned.ac.cr', 'footer.inst': 'Vice-Reitoria de Pesquisa · Universidad Estatal a Distancia (UNED)', 'footer.loc': 'San José, Costa Rica · 2026', 'footer.cc-label': 'Licença',
     'about.title': 'Sobre o Bibliochecker',
     'about.body': '<p>O verificador de referências bibliográficas <strong>BiblioChecker</strong> nasce da experiência editorial na revista <strong>UNED Research Journal (URJ)</strong>, vinculada à Vice-Reitoria de Pesquisa da Universidad Estatal a Distancia da Costa Rica (UNED), onde a pesquisa se organiza como um sistema em rede sob um princípio claro desde a origem: o maior rigor acadêmico possível, a serviço da democratização do conhecimento.</p><p>A ferramenta responde a uma preocupação cada vez mais frequente na prática editorial: o aparecimento de referências bibliográficas geradas com apoio de Inteligência Artificial que parecem perfeitamente críveis —autores reais, revistas reconhecidas, títulos adequados— mas que, ao serem revisadas, não existem ou misturam dados de publicações diferentes. Verificar isso manualmente, referência por referência, é um processo lento e sujeito a erros, e omiti-lo compromete a integridade do que a revista publica.</p><p>Por isso, esta ferramenta foi desenvolvida sob direção e instrução editorial, codificada com a ferramenta <strong>Claude Code</strong> como apoio técnico a um critério definido pela experiência humana. Sua função é confrontar as referências com fontes reais (CrossRef, bases acadêmicas) para apontar possíveis inconsistências ou alucinações, e verificar se o formato cumpre as normas <strong>APA 7.ª edição</strong>, não para emitir um parecer definitivo: o resultado é um guia de apoio à revisão, e a verificação final de cada referência continua sendo responsabilidade do profissional editorial.</p><p>Esta ferramenta é de acesso aberto e código aberto, disponível para que qualquer pessoa possa revisá-la, usá-la e adaptá-la às suas próprias necessidades.</p>',

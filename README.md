@@ -78,6 +78,9 @@ enlace al código fuente está en el pie de la propia aplicación.
 
 Componentes y servicios de terceros: [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
 
+Qué cambió en cada versión y **qué limitaciones tiene la herramienta**:
+[`CHANGELOG.md`](CHANGELOG.md).
+
 ---
 
 ## Cómo citar

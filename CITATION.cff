@@ -23,7 +23,7 @@ keywords:
   - retractaciones
   - CrossRef
   - edición científica
-version: "47"
+version: "1.0.0"
 date-released: "2026-09-24"
 license: AGPL-3.0-or-later
 repository-code: "https://github.com/alexescazu24-ship-it/verificador-referencias2026.2"

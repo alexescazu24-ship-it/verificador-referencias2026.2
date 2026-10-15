@@ -7,9 +7,16 @@ authors:
     given-names: "Alexander"
     email: fchinchillas@uned.ac.cr
     orcid: "https://orcid.org/0000-0001-9465-1522"
-    affiliation: "Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED), Costa Rica"
+    affiliation: "Unidad de Ciencia Abierta, Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED), Costa Rica"
     country: CR
 abstract: >-
+  Open-source web tool that checks APA 7 bibliographic references in order to detect
+  AI hallucinations. It queries CrossRef, DataCite, Semantic Scholar, OpenAlex and PubMed,
+  flags inconsistencies in author, year, volume and title, and marks retracted articles.
+  It runs entirely in the browser, with no accounts, and never stores the user's text.
+  Interface and manual in Spanish, English and Portuguese.
+
+
   Herramienta web de código abierto que verifica referencias bibliográficas en formato
   APA 7 para detectar alucinaciones de inteligencia artificial. Contrasta cada referencia
   contra CrossRef, DataCite, Semantic Scholar, OpenAlex y PubMed, señala inconsistencias
@@ -17,12 +24,14 @@ abstract: >-
   íntegramente en el navegador, sin cuentas y sin almacenar el texto del usuario.
   Interfaz y manual en español, inglés y portugués.
 keywords:
-  - referencias bibliográficas
+  - reference checking
   - APA 7
-  - alucinaciones de IA
+  - AI hallucinations
+  - research integrity
+  - retractions
+  - scholarly publishing
+  - referencias bibliográficas
   - integridad científica
-  - retractaciones
-  - CrossRef
   - edición científica
 version: "1.0.0"
 date-released: "2026-10-14"

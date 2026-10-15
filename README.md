@@ -105,15 +105,18 @@ Usá el botón **«Cite this repository»** de GitHub, que lee [`CITATION.cff`](
 o bien:
 
 > Chinchilla Serrano, A. (2026). *Bibliochecker: verificador de referencias bibliográficas
-> APA 7* [Software]. Vicerrectoría de Investigación, Universidad Estatal a Distancia.
+> APA 7* [Software]. Unidad de Ciencia Abierta, Vicerrectoría de Investigación,
+> Universidad Estatal a Distancia.
 > https://github.com/alexescazu24-ship-it/verificador-referencias2026.2
 
 ---
 
 ## Créditos
 
-Creado por **Alexander Chinchilla Serrano** · Vicerrectoría de Investigación, Universidad
-Estatal a Distancia (UNED) · San José, Costa Rica · 2026 · fchinchillas@uned.ac.cr
+Creado por **Alexander Chinchilla Serrano**
+([ORCID 0000-0001-9465-1522](https://orcid.org/0000-0001-9465-1522)) · Unidad de Ciencia
+Abierta, Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED) ·
+San José, Costa Rica · 2026 · fchinchillas@uned.ac.cr
 
 **Codificación:** Claude Code (Anthropic) — identificadores de modelo `claude-opus-5` y
 `claude-sonnet-5` — bajo instrucción, criterio y experiencia editorial humana.

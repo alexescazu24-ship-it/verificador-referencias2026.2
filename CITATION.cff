@@ -33,6 +33,15 @@ keywords:
   - referencias bibliográficas
   - integridad científica
   - edición científica
+# El DOI principal es el de TODAS las versiones: resuelve siempre a la más reciente
+doi: "10.5281/zenodo.23382459"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23382459"
+    description: "Todas las versiones (citá este en un artículo salvo que necesites una concreta)"
+  - type: doi
+    value: "10.5281/zenodo.23382460"
+    description: "Versión 1.0.0"
 version: "1.0.0"
 date-released: "2026-10-14"
 license: AGPL-3.0-or-later

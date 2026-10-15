@@ -2,6 +2,8 @@
 
 **Verificador de referencias bibliográficas en APA 7, para detectar alucinaciones de IA.**
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23382459.svg)](https://doi.org/10.5281/zenodo.23382459)
+
 ▶ **Usar la herramienta:** https://alexescazu24-ship-it.github.io/verificador-referencias2026.2/
 
 Se pega la lista de referencias y Bibliochecker las contrasta, una por una, contra bases
@@ -105,9 +107,15 @@ Usá el botón **«Cite this repository»** de GitHub, que lee [`CITATION.cff`](
 o bien:
 
 > Chinchilla Serrano, A. (2026). *Bibliochecker: verificador de referencias bibliográficas
-> APA 7* [Software]. Unidad de Ciencia Abierta, Vicerrectoría de Investigación,
-> Universidad Estatal a Distancia.
-> https://github.com/alexescazu24-ship-it/verificador-referencias2026.2
+> APA 7* (Versión 1.0.0) [Software]. Unidad de Ciencia Abierta, Vicerrectoría de
+> Investigación, Universidad Estatal a Distancia. https://doi.org/10.5281/zenodo.23382459
+
+El depósito tiene **dos identificadores**. El de arriba representa **todas las versiones** y
+siempre lleva a la más reciente: es el que conviene citar. Si necesita referirse a esta
+versión exacta, use `https://doi.org/10.5281/zenodo.23382460`.
+
+El código está archivado además en **Software Heritage**, enlazado desde la página del
+depósito en Zenodo.
 
 ---
 

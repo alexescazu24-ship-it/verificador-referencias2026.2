@@ -83,6 +83,22 @@ Qué cambió en cada versión y **qué limitaciones tiene la herramienta**:
 
 ---
 
+## Requisitos y cómo informar de un problema
+
+No hace falta instalar nada: la herramienta es un único archivo HTML que corre en cualquier
+navegador moderno con conexión a internet, que es lo que necesita para consultar las bases
+bibliográficas. También funciona descargándola y abriéndola desde el disco.
+
+**Si encuentra un fallo, por favor avísenos.** Los errores más importantes que se han
+corregido salieron de usarla con listas de referencias reales, no de las pruebas. Interesa
+sobre todo el caso contrario al esperado: **una referencia correcta que la herramienta
+marque**, porque es el fallo que hace desconfiar de todo el informe.
+
+Puede abrir un *issue* en el repositorio o escribir a fchinchillas@uned.ac.cr. Ayuda mucho
+incluir la referencia tal cual la pegó y qué resultado esperaba.
+
+---
+
 ## Cómo citar
 
 Usá el botón **«Cite this repository»** de GitHub, que lee [`CITATION.cff`](CITATION.cff),

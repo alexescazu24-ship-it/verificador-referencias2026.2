@@ -1443,7 +1443,7 @@ async function verificarCrossRef(doi) {
   const cached = cacheGet(ck);
   if (cached !== null) return cached;
   try {
-    const r = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}?mailto=refcheck@app.io`, { signal: AbortSignal.timeout(8000) });
+    const r = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}?mailto=fchinchillas@uned.ac.cr`, { signal: AbortSignal.timeout(8000) });
     if (!r.ok) { const res = { existe: false }; cacheSet(ck, res); return res; }
     const d = await r.json(); const m = d.message;
     // Retractaciones: CrossRef integra datos de Retraction Watch en 'update-to' (desde 2023)
@@ -1573,7 +1573,7 @@ async function verificarOpenAlex(ref) {
   const cached = cacheGet(ck);
   if (cached !== null) return cached;
   try {
-    const r = await fetch(`https://api.openalex.org/works?search=${encodeURIComponent(query)}&select=title,authorships,publication_year,doi&per-page=3&mailto=refcheck@app.io`, { signal: AbortSignal.timeout(9000) });
+    const r = await fetch(`https://api.openalex.org/works?search=${encodeURIComponent(query)}&select=title,authorships,publication_year,doi&per-page=3&mailto=fchinchillas@uned.ac.cr`, { signal: AbortSignal.timeout(9000) });
     if (!r.ok) return null;
     const d = await r.json();
     if (!d.results?.length) { const res = { encontrado: false }; cacheSet(ck, res); return res; }

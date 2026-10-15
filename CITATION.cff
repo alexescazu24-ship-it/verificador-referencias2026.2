@@ -6,6 +6,7 @@ authors:
   - family-names: "Chinchilla Serrano"
     given-names: "Alexander"
     email: fchinchillas@uned.ac.cr
+    orcid: "https://orcid.org/0000-0001-9465-1522"
     affiliation: "Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED), Costa Rica"
     country: CR
 abstract: >-
@@ -24,7 +25,7 @@ keywords:
   - CrossRef
   - edición científica
 version: "1.0.0"
-date-released: "2026-09-24"
+date-released: "2026-10-14"
 license: AGPL-3.0-or-later
 repository-code: "https://github.com/alexescazu24-ship-it/verificador-referencias2026.2"
 url: "https://alexescazu24-ship-it.github.io/verificador-referencias2026.2/"

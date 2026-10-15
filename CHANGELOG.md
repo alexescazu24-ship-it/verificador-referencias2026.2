@@ -7,7 +7,7 @@ Versionado según [SemVer](https://semver.org/lang/es/).
 
 ---
 
-## [1.0.0] — 2026-09-24
+## [1.0.0] — 2026-10-14
 
 Primera versión documentada y archivada. La herramienta venía publicándose desde junio de
 2026 sin registro de cambios: cada actualización era un «Update index.html». Esta entrada
@@ -62,6 +62,10 @@ título, cuyo primer resultado suele ser otro artículo.
   delatan así.
 - **Licencia.** El archivo `LICENSE` contenía la GPL-3.0 y no la AGPL-3.0 que la
   herramienta declara.
+- **Dirección de contacto inventada.** Las consultas a CrossRef y OpenAlex se identificaban
+  con `refcheck@app.io`, un dominio que no existe. CrossRef advierte que si intenta
+  contactar a quien consulta y el correo rebota, puede bloquear las peticiones que usen esa
+  dirección. Ahora se identifica con el correo institucional del autor.
 
 ### Cambiado
 

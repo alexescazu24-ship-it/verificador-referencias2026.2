@@ -486,14 +486,15 @@ body { font-family: var(--font-body); }
 
     .site-footer { padding:20px 24px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
     .footer-credit { font-size:12px; color:var(--texto-dim); line-height:1.6; }
-    .footer-marca { display:flex; align-items:center; }
-    .footer-marca img { display:block; height:36px; width:auto; }
-    /* Sobre fondo oscuro el azul institucional no llega al contraste mínimo: va sobre
-       placa clara, que conserva los colores oficiales de la marca sin recolorearla. */
-    .footer-marca { background:#fff; padding:9px 14px; border-radius:10px; }
-    [data-theme="claro"] .footer-marca, [data-theme="sobrio"] .footer-marca { background:transparent; padding:9px 0; }
     .footer-credit strong { color:var(--texto); }
-    .footer-cc { display:flex; align-items:center; gap:10px; }
+    .footer-cc { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    /* Marca institucional junto a las insignias de licencia. Sobre fondo oscuro el azul
+       institucional da 1,68:1 de contraste, así que va sobre placa clara; recolorearla a
+       blanco no servía porque el matraz del icono va calado y desaparecía.
+       flex-shrink:0 para que nunca se comprima: una marca deformada es peor que ninguna. */
+    .marca-uned { flex-shrink:0; background:#fff; padding:7px 11px; border-radius:9px; display:flex; align-items:center; margin-right:4px; }
+    .marca-uned img { display:block; height:32px; width:auto; }
+    [data-theme="claro"] .marca-uned, [data-theme="sobrio"] .marca-uned { background:transparent; padding:7px 0; }
     .cc-badge { display:flex; align-items:center; gap:7px; padding:6px 12px; border:1px solid var(--border); border-radius:8px; background:var(--surface); text-decoration:none; transition:border-color 0.15s; }
     .cc-badge:hover { border-color:#556; }
     .cc-badge img { height:22px; opacity:0.85; }
@@ -694,11 +695,11 @@ body { font-family: var(--font-body); }
 </div>
 
 <footer class="site-footer">
-  <div class="footer-marca">
-    <img id="uned-img" src="" alt="Universidad Estatal a Distancia · Unidad de Ciencia Abierta" width="170" height="36">
-  </div>
   <div class="footer-credit" id="footer-credit"></div>
   <div class="footer-cc">
+    <div class="marca-uned">
+      <img id="uned-img" src="" alt="Universidad Estatal a Distancia · Unidad de Ciencia Abierta" width="150" height="32">
+    </div>
      <a class="cc-badge" href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">
     <span class="cc-text"><strong><span data-i18n="footer.badge-code"></span></strong> AGPL-3.0-or-later</span>
   </a>

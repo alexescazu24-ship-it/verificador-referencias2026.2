@@ -32,7 +32,7 @@ antes solo mencionaba la Vicerrectoría de Investigación.
 ### Identidad visual
 
 Se añade el logotipo de la **Universidad Estatal a Distancia · Unidad de Ciencia Abierta**
-en el pie. Va sobre placa clara en el tema oscuro: el azul institucional sobre ese fondo da
+en el pie, junto a las insignias de licencia. Va sobre placa clara en el tema oscuro: el azul institucional sobre ese fondo da
 un contraste de 1,68 a 1, muy por debajo del mínimo de 3 a 1 que necesita un elemento
 gráfico. Se descartó recolorear la marca a blanco porque el matraz del icono va calado y
 desaparecía. En los temas claros la placa no aparece.

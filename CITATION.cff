@@ -50,6 +50,9 @@ identifiers:
     value: "10.5281/zenodo.23382459"
     description: "Todas las versiones (citá este en un artículo salvo que necesites una concreta)"
   - type: doi
+    value: "10.5281/zenodo.24144042"
+    description: "Versión 1.1.0"
+  - type: doi
     value: "10.5281/zenodo.23382460"
     description: "Versión 1.0.0"
 version: "1.1.0"

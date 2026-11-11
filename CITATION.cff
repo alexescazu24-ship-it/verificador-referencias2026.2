@@ -4,9 +4,19 @@ message: "Si usás esta herramienta en un trabajo publicado, por favor citala as
 type: software
 authors:
   - family-names: "Chinchilla Serrano"
-    given-names: "Alexander"
+    given-names: "Freddy Alexander"
     email: fchinchillas@uned.ac.cr
     orcid: "https://orcid.org/0000-0001-9465-1522"
+    affiliation: "Unidad de Ciencia Abierta, Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED), Costa Rica"
+    country: CR
+  - family-names: "Seas"
+    given-names: "Carolina"
+    orcid: "https://orcid.org/0000-0002-2102-1973"
+    affiliation: "Unidad de Ciencia Abierta, Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED), Costa Rica"
+    country: CR
+  - family-names: "Segura Jiménez"
+    given-names: "Steven"
+    orcid: "https://orcid.org/0009-0005-6475-8798"
     affiliation: "Unidad de Ciencia Abierta, Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED), Costa Rica"
     country: CR
 abstract: >-
@@ -42,8 +52,8 @@ identifiers:
   - type: doi
     value: "10.5281/zenodo.23382460"
     description: "Versión 1.0.0"
-version: "1.0.0"
-date-released: "2026-10-14"
+version: "1.1.0"
+date-released: "2026-11-11"
 license: AGPL-3.0-or-later
 repository-code: "https://github.com/alexescazu24-ship-it/verificador-referencias2026.2"
 url: "https://alexescazu24-ship-it.github.io/verificador-referencias2026.2/"

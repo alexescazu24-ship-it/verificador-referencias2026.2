@@ -72,7 +72,12 @@ en el mismo archivo:
   textos de interfaz, manual, «Acerca de» y redacción de los informes. Ver
   [`LICENSE-CONTENT.md`](LICENSE-CONTENT.md), que explica **dónde está el límite** entre
   uno y otro.
-- El **logotipo y el nombre** quedan reservados y no los cubre ninguna de las dos.
+- El **logotipo y el nombre** de Bibliochecker quedan reservados y no los cubre ninguna
+  de las dos.
+- El **logotipo de la Universidad Estatal a Distancia y el de la Unidad de Ciencia
+  Abierta** son marcas de la institución, se usan aquí por ser el producto suyo, y
+  **tampoco los cubren las licencias anteriores**: reutilizar el código o el contenido
+  no da derecho a reutilizar esas marcas.
 
 Se eligió la AGPL a propósito: es una herramienta que se usa a través de la red, y la AGPL
 obliga a que quien la ofrezca modificada ponga su código a disposición de quien la use. El
@@ -106,9 +111,10 @@ incluir la referencia tal cual la pegó y qué resultado esperaba.
 Usá el botón **«Cite this repository»** de GitHub, que lee [`CITATION.cff`](CITATION.cff),
 o bien:
 
-> Chinchilla Serrano, A. (2026). *Bibliochecker: verificador de referencias bibliográficas
-> APA 7* (Versión 1.0.0) [Software]. Unidad de Ciencia Abierta, Vicerrectoría de
-> Investigación, Universidad Estatal a Distancia. https://doi.org/10.5281/zenodo.23382459
+> Chinchilla Serrano, F. A., Seas, C., & Segura Jiménez, S. (2026). *Bibliochecker:
+> verificador de referencias bibliográficas APA 7* [Software]. Unidad de Ciencia Abierta,
+> Vicerrectoría de Investigación, Universidad Estatal a Distancia.
+> https://doi.org/10.5281/zenodo.23382459
 
 El depósito tiene **dos identificadores**. El de arriba representa **todas las versiones** y
 siempre lleva a la más reciente: es el que conviene citar. Si necesita referirse a esta
@@ -121,10 +127,16 @@ depósito en Zenodo.
 
 ## Créditos
 
-Creado por **Alexander Chinchilla Serrano**
-([ORCID 0000-0001-9465-1522](https://orcid.org/0000-0001-9465-1522)) · Unidad de Ciencia
-Abierta, Vicerrectoría de Investigación, Universidad Estatal a Distancia (UNED) ·
-San José, Costa Rica · 2026 · fchinchillas@uned.ac.cr
+Desarrollado en la **Unidad de Ciencia Abierta**, Vicerrectoría de Investigación,
+Universidad Estatal a Distancia (UNED) · San José, Costa Rica · 2026
+
+| Autoría | ORCID | Aporte |
+|---|---|---|
+| Freddy Alexander Chinchilla Serrano | [0000-0001-9465-1522](https://orcid.org/0000-0001-9465-1522) | Idea original, desarrollo |
+| Carolina Seas | [0000-0002-2102-1973](https://orcid.org/0000-0002-2102-1973) | Desarrollo, mejoras, pruebas |
+| Steven Segura Jiménez | [0009-0005-6475-8798](https://orcid.org/0009-0005-6475-8798) | Desarrollo, mejoras, pruebas |
+
+Contacto: fchinchillas@uned.ac.cr
 
 **Codificación:** Claude Code (Anthropic) — identificadores de modelo `claude-opus-5` y
 `claude-sonnet-5` — bajo instrucción, criterio y experiencia editorial humana.
@@ -184,8 +196,16 @@ a modified version to make its source available to its users.
 
 ### Credits
 
-Created by **Alexander Chinchilla Serrano** · Vice-Rectory for Research, Universidad Estatal
-a Distancia (UNED) · San José, Costa Rica · 2026 · fchinchillas@uned.ac.cr
+Developed at the **Open Science Unit**, Vice-Rectory for Research, Universidad Estatal a
+Distancia (UNED) · San José, Costa Rica · 2026
+
+| Author | ORCID | Contribution |
+|---|---|---|
+| Freddy Alexander Chinchilla Serrano | [0000-0001-9465-1522](https://orcid.org/0000-0001-9465-1522) | Original idea, development |
+| Carolina Seas | [0000-0002-2102-1973](https://orcid.org/0000-0002-2102-1973) | Development, improvements, testing |
+| Steven Segura Jiménez | [0009-0005-6475-8798](https://orcid.org/0009-0005-6475-8798) | Development, improvements, testing |
+
+Contact: fchinchillas@uned.ac.cr
 
 **Coding:** Claude Code (Anthropic) — model identifiers `claude-opus-5` and
 `claude-sonnet-5` — under human editorial instruction, judgement and experience.

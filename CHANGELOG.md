@@ -7,6 +7,42 @@ Versionado según [SemVer](https://semver.org/lang/es/).
 
 ---
 
+## [1.1.0] — 2026-11-11
+
+Versión de autoría y atribución institucional. **No cambia el comportamiento de la
+herramienta**: no se tocó ni la verificación, ni los estados, ni las fuentes.
+
+### Autoría
+
+La herramienta pasa a constar como obra de tres personas de la Unidad de Ciencia Abierta,
+que es donde se desarrolló:
+
+| Autoría | ORCID | Aporte |
+|---|---|---|
+| Freddy Alexander Chinchilla Serrano | 0000-0001-9465-1522 | Idea original, desarrollo |
+| Carolina Seas | 0000-0002-2102-1973 | Desarrollo, mejoras, pruebas |
+| Steven Segura Jiménez | 0009-0005-6475-8798 | Desarrollo, mejoras, pruebas |
+
+Actualizado en el pie de la aplicación, en los créditos de los tres informes exportados, en
+los tres idiomas, en el `README` y en el `CITATION.cff`, que es el que lee Zenodo.
+
+La **Unidad de Ciencia Abierta** aparece ahora de forma explícita en la adscripción, que
+antes solo mencionaba la Vicerrectoría de Investigación.
+
+### Identidad visual
+
+Se añade el logotipo de la **Universidad Estatal a Distancia · Unidad de Ciencia Abierta**
+en el pie. Va sobre placa clara en el tema oscuro: el azul institucional sobre ese fondo da
+un contraste de 1,68 a 1, muy por debajo del mínimo de 3 a 1 que necesita un elemento
+gráfico. Se descartó recolorear la marca a blanco porque el matraz del icono va calado y
+desaparecía. En los temas claros la placa no aparece.
+
+Se añade al apartado de licencias que los logotipos institucionales **no** están cubiertos
+por la AGPL ni por la CC BY: reutilizar el código o el contenido no da derecho a reutilizar
+esas marcas.
+
+---
+
 ## [1.0.0] — 2026-10-14
 
 Primera versión documentada y archivada. La herramienta venía publicándose desde junio de

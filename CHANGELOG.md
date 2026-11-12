@@ -7,6 +7,44 @@ Versionado según [SemVer](https://semver.org/lang/es/).
 
 ---
 
+## [1.2.0] — 2026-11-12
+
+Sigue sin tocarse el comportamiento de la herramienta: ni la verificación, ni los estados,
+ni las fuentes.
+
+### Identidad visual
+
+El logotipo de la **Universidad Estatal a Distancia · Unidad de Ciencia Abierta** se mueve
+del pie a la **cabecera, arriba a la derecha**, y pasa a ser un **enlace** al sitio de la
+Unidad (`https://investiga.uned.ac.cr/cienciaabierta/`), con rótulo y nombre accesible en
+los tres idiomas.
+
+Desaparece la placa clara que llevaba debajo. En la versión 1.1.0 se descartó la marca en
+blanco porque recolorear la azul dejaba el matraz del icono calado; resultó ser un problema
+inexistente, porque la UNED publica una versión en blanco propia en la que el matraz
+conserva su azul. Ahora se incrustan **las dos** y el CSS elige según el tema: la blanca
+sobre las cabeceras oscuras (temas oscuro y claro) y la azul sobre la clara (tema sobrio).
+Así la marca va directamente sobre el fondo, sin placa, en los tres temas.
+
+Sube de 32 a **40 px de alto**: rasterizada al tamaño real, a 32 px los aros de la «U» se
+funden entre sí y «CIENCIA» adelgaza hasta perder forma.
+
+### Corregido
+
+La botonera de la cabecera no envolvía nunca. En pantallas estrechas se salía del
+encabezado —que recorta con `overflow:hidden`— y **«Manual» y «Acerca de» quedaban fuera de
+alcance en un teléfono**, junto con parte de las insignias de fuentes. Venía de antes; se
+detectó al comprobar la marca nueva, que se salía por la misma causa. Con sitio de sobra el
+reparto no cambia: solo envuelve cuando falta espacio.
+
+### Documentación
+
+El manual describe la marca institucional y su enlace en español, inglés y portugués. El
+`README` corrige el identificador de versión concreta, que seguía apuntando a la 1.0.0
+cuando la publicada ya era la 1.1.0.
+
+---
+
 ## [1.1.0] — 2026-11-11
 
 Versión de autoría y atribución institucional. **No cambia el comportamiento de la

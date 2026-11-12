@@ -35,6 +35,10 @@ Todo está en `index.html`, así que conviene decir con precisión qué es cada 
 - El **logotipo** de Bibliochecker y el nombre de la herramienta. Son identidad visual, no
   documentación: quedan reservados. Se puede reproducir el logotipo para referirse a la
   herramienta, no para identificar una versión modificada o un producto distinto.
+- El **logotipo de la Universidad Estatal a Distancia y el de la Unidad de Ciencia
+  Abierta**, que van incrustados en el archivo y aparecen en la cabecera de la aplicación.
+  Son marcas de la institución: se usan aquí por ser la herramienta obra suya, y reutilizar
+  el código o el contenido no da derecho a reutilizarlas.
 - Los datos que devuelven CrossRef, Semantic Scholar, OpenAlex, PubMed y DataCite, que
   pertenecen a cada fuente y se rigen por sus propias condiciones. Bibliochecker no los
   almacena ni los redistribuye: los consulta en el momento y los muestra.
@@ -48,8 +52,9 @@ para quien recibe el programa.
 
 La CC BY 4.0 solo pide reconocer la autoría. Basta con una línea como esta:
 
-> Textos tomados de Bibliochecker, de Alexander Chinchilla Serrano (Vicerrectoría de
-> Investigación, Universidad Estatal a Distancia, Costa Rica), bajo licencia CC BY 4.0.
+> Textos tomados de Bibliochecker, de Freddy Alexander Chinchilla Serrano, Carolina Seas y
+> Steven Segura Jiménez (Unidad de Ciencia Abierta, Vicerrectoría de Investigación,
+> Universidad Estatal a Distancia, Costa Rica), bajo licencia CC BY 4.0.
 > https://github.com/alexescazu24-ship-it/verificador-referencias2026.2
 
 Si los modificás, indicá que lo hiciste. No hace falta pedir permiso, ni para uso
@@ -68,16 +73,19 @@ interface strings in Spanish, English and Portuguese, the full user manual, the 
 text and the wording of the exported reports — is under **Creative Commons Attribution 4.0
 International (CC BY 4.0)**.
 
-The Bibliochecker **logo and name are reserved** and covered by neither licence. Data
-returned by CrossRef, Semantic Scholar, OpenAlex, PubMed and DataCite belongs to those
-sources and follows their own terms; Bibliochecker queries it live and never stores or
-redistributes it.
+The Bibliochecker **logo and name are reserved** and covered by neither licence. So are the
+**Universidad Estatal a Distancia and Open Science Unit logos**, embedded in the file and
+shown in the application header: they are institutional trademarks, used here because the
+tool is the institution's own work, and reusing the code or the content gives no right to
+reuse them. Data returned by CrossRef, Semantic Scholar, OpenAlex, PubMed and DataCite
+belongs to those sources and follows their own terms; Bibliochecker queries it live and
+never stores or redistributes it.
 
 Where it is unclear which part a fragment belongs to, the AGPL applies.
 
-To reuse the content, credit: *Bibliochecker, by Alexander Chinchilla Serrano (Vice-Rectory
-for Research, Universidad Estatal a Distancia, Costa Rica), CC BY 4.0* and link back to the
-repository. Full licence: https://creativecommons.org/licenses/by/4.0/
+To reuse the content, credit: *Bibliochecker, by Freddy Alexander Chinchilla Serrano,
+Carolina Seas and Steven Segura Jiménez (Open Science Unit, Vice-Rectory for Research,
+Universidad Estatal a Distancia, Costa Rica), CC BY 4.0* and link back to the repository. Full licence: https://creativecommons.org/licenses/by/4.0/
 
 ---
 

@@ -116,9 +116,14 @@ o bien:
 > Vicerrectoría de Investigación, Universidad Estatal a Distancia.
 > https://doi.org/10.5281/zenodo.23382459
 
-El depósito tiene **dos identificadores**. El de arriba representa **todas las versiones** y
-siempre lleva a la más reciente: es el que conviene citar. Si necesita referirse a esta
-versión exacta, use `https://doi.org/10.5281/zenodo.23382460`.
+El de arriba representa **todas las versiones** y siempre lleva a la más reciente: es el
+que conviene citar. Cada versión tiene además el suyo propio, por si hace falta apuntar a
+una en concreto:
+
+| Versión | DOI |
+|---|---|
+| 1.1.0 | [10.5281/zenodo.24144042](https://doi.org/10.5281/zenodo.24144042) |
+| 1.0.0 | [10.5281/zenodo.23382460](https://doi.org/10.5281/zenodo.23382460) |
 
 El código está archivado además en **Software Heritage**, enlazado desde la página del
 depósito en Zenodo.
@@ -190,8 +195,9 @@ receives the text of your references. Both can be removed — see
 Dual-licensed. **Code** under the **GNU AGPL v3.0 or later** ([`LICENSE`](LICENSE));
 **editorial content** — interface strings, manual, "About" text and report wording — under
 **CC BY 4.0** ([`LICENSE-CONTENT.md`](LICENSE-CONTENT.md), which sets out exactly where the
-boundary lies). The **logo and name are reserved** and covered by neither. The AGPL was a
-deliberate choice: this is network-facing software, and the AGPL requires anyone who offers
+boundary lies). The **logo and name are reserved** and covered by neither, and so are the
+**Universidad Estatal a Distancia and Open Science Unit logos**, which are institutional
+trademarks. The AGPL was a deliberate choice: this is network-facing software, and the AGPL requires anyone who offers
 a modified version to make its source available to its users.
 
 ### Credits

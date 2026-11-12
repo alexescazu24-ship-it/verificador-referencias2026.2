@@ -122,6 +122,7 @@ una en concreto:
 
 | Versión | DOI |
 |---|---|
+| 1.2.0 | [10.5281/zenodo.24148661](https://doi.org/10.5281/zenodo.24148661) |
 | 1.1.0 | [10.5281/zenodo.24144042](https://doi.org/10.5281/zenodo.24144042) |
 | 1.0.0 | [10.5281/zenodo.23382460](https://doi.org/10.5281/zenodo.23382460) |
 
